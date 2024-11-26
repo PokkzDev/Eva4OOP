@@ -8,3 +8,8 @@ class Utilidades:
     @staticmethod
     def pausar():
         input("Presione Enter para continuar...")
+
+    @staticmethod
+    def en_desarrollo():
+        print("Esta función está en desarrollo.")
+        Utilidades.pausar()

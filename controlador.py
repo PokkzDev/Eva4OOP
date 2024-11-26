@@ -1,35 +1,87 @@
 import re
 from modelo import UsuarioModelo
+from modelo import DestinoModelo
+from modelo import PaqueteTuristicoModelo
 
 class Controlador:
-    def __init__(self, modelo):
-        self.modelo = modelo
+    @staticmethod
+    def iniciar_sesion(usuario, contrasena):
+        usuario_modelo = UsuarioModelo()
+        resultado = usuario_modelo.verificar_usuario(usuario, contrasena)
+        usuario_modelo.cerrar_conexion()
+        return resultado
 
-    def iniciar_sesion(self, usuario, contrasena):
-        
-        return self.modelo.verificar_usuario(usuario, contrasena)
+class ControladorDestino:
+    def __init__(self):
+        self.destino_modelo = DestinoModelo()
 
-    def registrarse(self, username, password, confirm_password):
-        validations = [
-            (not username, "El nombre de usuario no puede estar vacío."),
-            (len(username) < 5, "El nombre de usuario debe tener al menos 5 caracteres."),
-            (password != confirm_password, "Las contraseñas no coinciden."),
-            (not password, "La contraseña no puede estar vacía."),
-            (len(password) < 8, "La contraseña debe tener al menos 8 caracteres."),
-            (not re.search(r"[A-Z]", password), "La contraseña debe contener al menos una letra mayúscula."),
-            (not re.search(r"[a-z]", password), "La contraseña debe contener al menos una letra minúscula."),
-            (not re.search(r"[0-9]", password), "La contraseña debe contener al menos un número."),
-            (not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password), "La contraseña debe contener al menos un carácter especial.")
-        ]
+    def obtener_destinos(self):
+        return self.destino_modelo.obtener_destinos()
 
-        for condition, message in validations:
-            if condition:
-                return False, message
+    def crear_destino(self, nombre, descripcion, actividades, costo):
+        return self.destino_modelo.crear_destino(nombre, descripcion, actividades, costo)
 
-        if self.modelo.registrar_usuario(username, password):
-            return True, "Registro exitoso."
-        else:
-            return False, "El usuario ya existe. Intente con otro nombre de usuario."
+    def actualizar_destino(self, id_destino, nombre, descripcion, actividades, costo):
+        return self.destino_modelo.actualizar_destino(id_destino, nombre, descripcion, actividades, costo)
 
-# Example usage
-# controlador = Controlador(modelo)
+    def eliminar_destino(self, id_destino):
+        # First, delete related rows in PaqueteDestino
+        self.destino_modelo.eliminar_paquete_destino_por_destino(id_destino)
+        # Then, delete the destino
+        return self.destino_modelo.eliminar_destino(id_destino)
+
+    def obtener_destino(self, id_destino):
+        return self.destino_modelo.obtener_destino(id_destino)
+
+    def cerrar_conexion(self):
+        self.destino_modelo.cerrar_conexion()
+
+class ControladorPaqueteTuristico:
+    def __init__(self):
+        self.paquete_modelo = PaqueteTuristicoModelo()
+        self.destino_modelo = DestinoModelo()
+
+    def obtener_paquetes_turisticos(self):
+        return self.paquete_modelo.obtener_paquetes_turisticos()
+
+    def crear_paquete_turistico(self, fecha_inicio, fecha_fin, destino_ids):
+        # Calcular precio_total sumando los costos de los destinos seleccionados
+        destinos = self.destino_modelo.obtener_destinos_por_ids(destino_ids)
+        if not destinos:
+            return False
+        precio_total = sum(destino[4] for destino in destinos)  # Asumiendo que el costo está en el índice 4
+        paquete_id = self.paquete_modelo.crear_paquete_turistico(fecha_inicio, fecha_fin, precio_total)
+        if not paquete_id:
+            return False
+        for destino_id in destino_ids:
+            if not self.paquete_modelo.agregar_destino_a_paquete(paquete_id, destino_id):
+                return False
+        return True
+
+    def actualizar_paquete_turistico(self, id_paquete_turistico, fecha_inicio, fecha_fin, destino_ids):
+        # Calcular nuevo precio_total
+        destinos = self.destino_modelo.obtener_destinos_por_ids(destino_ids)
+        if not destinos:
+            return False
+        precio_total = sum(destino[4] for destino in destinos)
+        if not self.paquete_modelo.actualizar_paquete_turistico(id_paquete_turistico, fecha_inicio, fecha_fin, precio_total):
+            return False
+        # Actualizar destinos asociados
+        self.paquete_modelo.eliminar_destinos_de_paquete(id_paquete_turistico)
+        for destino_id in destino_ids:
+            if not self.paquete_modelo.agregar_destino_a_paquete(id_paquete_turistico, destino_id):
+                return False
+        return True
+
+    def eliminar_paquete_turistico(self, id_paquete_turistico):
+        # First, delete related rows in PaqueteDestino
+        self.paquete_modelo.eliminar_destinos_de_paquete(id_paquete_turistico)
+        # Then, delete the paquete turistico
+        return self.paquete_modelo.eliminar_paquete_turistico(id_paquete_turistico)
+
+    def obtener_paquete_turistico(self, id_paquete_turistico):
+        return self.paquete_modelo.obtener_paquete_turistico(id_paquete_turistico)
+
+    def cerrar_conexion(self):
+        self.paquete_modelo.cerrar_conexion()
+        self.destino_modelo.cerrar_conexion()

@@ -16,10 +16,10 @@ class DBConn:
         return self.cursor.fetchall()
     
     def execute(self, sql, params=None):
-        self.cursor.execute(sql, params)
+        cursor = self.db.cursor()
+        cursor.execute(sql, params)
         self.db.commit()
-        return self.cursor.rowcount
+        return cursor
     
     def cerrar_conexion(self):
         self.db.close()
-    

@@ -76,10 +76,11 @@ class DestinoModelo:
         try:
             sql = "SELECT * FROM Destinos WHERE id = %s"
             params = (id_destino,)
-            return self.db.query(sql, params)
+            result = self.db.query(sql, params)
+            return result[0] if result else None
         except mysql.connector.Error as err:
             print(f"Error: {err}")
-            return []
+            return None
 
     def crear_destino(self, nombre, descripcion, actividades, costo):
         try:
@@ -111,6 +112,26 @@ class DestinoModelo:
             print(f"Error: {err}")
             return False
 
+    def obtener_destinos_por_ids(self, destino_ids):
+        try:
+            format_strings = ','.join(['%s'] * len(destino_ids))
+            sql = f"SELECT * FROM Destinos WHERE id IN ({format_strings})"
+            params = tuple(destino_ids)
+            return self.db.query(sql, params)
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return []
+
+    def eliminar_paquete_destino_por_destino(self, destino_id):
+        try:
+            sql = "DELETE FROM PaqueteDestino WHERE destino_id = %s"
+            params = (destino_id,)
+            self.db.execute(sql, params)
+            return True
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return False
+
     def cerrar_conexion(self):
         self.db.cerrar_conexion()
 
@@ -136,16 +157,21 @@ class PaqueteTuristicoModelo:
         return self.db.query(sql)
 
     def obtener_paquete_turistico(self, id_paquete_turistico):
-        sql = "SELECT * FROM PaquetesTuristicos WHERE id = %s"
+        sql = "SELECT id, fecha_inicio, fecha_fin, precio_total FROM PaquetesTuristicos WHERE id = %s"
         params = (id_paquete_turistico,)
-        return self.db.query(sql, params)
+        result = self.db.query(sql, params)
+        return result[0] if result else None
 
     def crear_paquete_turistico(self, fecha_inicio, fecha_fin, precio_total):
-        sql = "INSERT INTO PaquetesTuristicos (fecha_inicio, fecha_fin, precio_total) VALUES (%s, %s, %s)"
-        params = (fecha_inicio, fecha_fin, precio_total)
-        self.db.execute(sql, params)
-        return True
-    
+        try:
+            sql = "INSERT INTO PaquetesTuristicos (fecha_inicio, fecha_fin, precio_total) VALUES (%s, %s, %s)"
+            params = (fecha_inicio, fecha_fin, precio_total)
+            cursor = self.db.execute(sql, params)  # Now returns cursor
+            return cursor.lastrowid  # Correctly access lastrowid
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return None
+
     def actualizar_paquete_turistico(self, id_paquete_turistico, fecha_inicio, fecha_fin, precio_total):
         sql = "UPDATE PaquetesTuristicos SET fecha_inicio = %s, fecha_fin = %s, precio_total = %s WHERE id = %s"
         params = (fecha_inicio, fecha_fin, precio_total, id_paquete_turistico)
@@ -169,6 +195,26 @@ class PaqueteTuristicoModelo:
         params = (id_paquete_turistico,)
         self.db.execute(sql, params)
         return True
+
+    def agregar_destino_a_paquete(self, paquete_id, destino_id):
+        try:
+            sql = "INSERT INTO PaqueteDestino (paquete_id, destino_id) VALUES (%s, %s)"
+            params = (paquete_id, destino_id)
+            self.db.execute(sql, params)
+            return True
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return False
+
+    def eliminar_destinos_de_paquete(self, paquete_id):
+        try:
+            sql = "DELETE FROM PaqueteDestino WHERE paquete_id = %s"
+            params = (paquete_id,)
+            self.db.execute(sql, params)
+            return True
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return False
 
     def cerrar_conexion(self):
         self.db.cerrar_conexion()
