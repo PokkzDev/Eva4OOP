@@ -1,11 +1,11 @@
-import sqlite3
 import bcrypt
 import pwinput
 import os
+from db_conn import DBConn
 
 class AdministracionUsuarios:
-    def __init__(self, db_path='./baseDeDatos/viajes_aventura.db'):
-        self.db_path = db_path
+    def __init__(self):
+        self.db = DBConn()
 
     def create_user(self):
         nombre = input("Ingrese el nombre del usuario: ")
@@ -22,16 +22,16 @@ class AdministracionUsuarios:
 
         hashed_password = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt(10))
 
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        print("Creando usuario...")
+        print("Nombre:", nombre)
+        print("Contraseña:", contrasena)
+        print("Rol:", rol)
 
-        cursor.execute('''
-            INSERT INTO Usuarios (nombre, contrasena, rol)
-            VALUES (?, ?, ?)
+        input("Presione Enter para continuar...")
+        self.db.execute('''
+            INSERT INTO Usuarios (username, password, rol)
+            VALUES (%s, %s, %s)
         ''', (nombre, hashed_password, rol))
-
-        conn.commit()
-        conn.close()
 
         print("Usuario creado exitosamente.")
 
@@ -40,12 +40,12 @@ class AdministracionUsuarios:
             os.system('cls' if os.name == 'nt' else 'clear')
             print("\nMenu de Usuarios")
             print("1. Crear usuario")
-            print("2. Salir")
+            print("S. Salir")
             opcion = input("Seleccione una opción: ")
 
             if opcion == '1':
                 self.create_user()
-            elif opcion == '2':
+            elif opcion.lower() == 's':
                 break
             else:
                 print("Opción no válida. Intente de nuevo.")
