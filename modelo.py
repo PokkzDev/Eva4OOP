@@ -7,6 +7,7 @@ import prettytable as pt
 class UsuarioModelo:
     def __init__(self):
         self.db = DBConn()
+        
 
     def verificar_usuario(self, usuario, contrasena):
         try:
