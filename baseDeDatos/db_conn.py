@@ -1,12 +1,16 @@
 import mysql.connector
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class DBConn:
     def __init__(self):
         self.db = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Asdf1234",
-            database="viajes_aventura"
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME")
         )
 
         self.cursor = self.db.cursor()
