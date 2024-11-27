@@ -61,3 +61,48 @@ CREATE TABLE IF NOT EXISTS Reservas (
     FOREIGN KEY (usuario_id) REFERENCES Usuarios(id) ON DELETE CASCADE,
     FOREIGN KEY (paquete_id) REFERENCES PaquetesTuristicos(id) ON DELETE CASCADE
 );
+
+-- Insert mock data for Destinos
+INSERT INTO Destinos (nombre, descripciones, actividades, costo) VALUES
+('Playa Paraíso', 'Hermosa playa con aguas cristalinas.', 'Nado, snorkel, relax', 1200.0),
+('Montaña Mística', 'Montañas llenas de misterio y naturaleza.', 'Senderismo, escalada', 1500.0),
+('Ciudad Historia', 'Ciudad rica en historia y cultura.', 'Visitas guiadas, museos', 1000.0),
+('Isla Tropical', 'Isla exótica con fauna diversa.', 'Buceo, pesca, exploración', 1800.0),
+('Desierto Dorado', 'Extensos desiertos con paisajes únicos.', 'Tours en camello, fotografía', 1300.0);
+
+-- Insert mock data for Paquetes Turísticos
+INSERT INTO PaquetesTuristicos (fecha_inicio, fecha_fin, precio_total) VALUES
+('2024-06-01', '2024-06-10', 5000.0),
+('2024-07-15', '2024-07-25', 7500.0);
+
+-- Insert mock data for PaqueteDestino
+INSERT INTO PaqueteDestino (paquete_id, destino_id) VALUES
+(1, 1),
+(1, 2),
+(2, 3),
+(2, 4),
+(2, 5);
+
+DELIMITER //
+
+DROP TRIGGER IF EXISTS actualizar_precio_paquete //
+
+CREATE TRIGGER actualizar_precio_paquete
+AFTER UPDATE ON Destinos
+FOR EACH ROW
+BEGIN
+    UPDATE PaquetesTuristicos pt
+    SET precio_total = (
+        SELECT IFNULL(SUM(d.costo), 0)
+        FROM PaqueteDestino pd
+        JOIN Destinos d ON pd.destino_id = d.id
+        WHERE pd.paquete_id = pt.id
+    )
+    WHERE pt.id IN (
+        SELECT pd.paquete_id
+        FROM PaqueteDestino pd
+        WHERE pd.destino_id = NEW.id
+    );
+END //
+
+DELIMITER ;

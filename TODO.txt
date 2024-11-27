@@ -3,22 +3,25 @@ Menu Inicio Sesion
     # Ingresar Contraseña
     # Redireccionar a Menu Admin o Menu Cliente
 
-
-
 # CRUD Destinos (Destino, Descripciones, Actividades, Costo)
     # Ver Destinos
     # Crear Destino
     # Actualizar Destino
     # Eliminar Destino
-# CRU Paquetes Turisticos (Destino, Fecha Inicio, Fecha Fin, Precio Total)
+
+# CRUD Paquetes Turisticos (Destino, Fecha Inicio, Fecha Fin, Precio Total)
     # Ver Paquetes Turisticos (Ya Creados)
     # Crear Paquete Turistico (Elegir DESTINO O DESTINOS, Fecha Inicio, Fecha Fin, Precio Total)
     # Actualizar Paquete Turistico (Elegir Paquete Turistico, Elegir Destino, Fecha Inicio, Fecha Fin, Precio Total)
     # Eliminar Paquete Turistico
-    
+
 Menu Cliente (Ya Creado)(Estados? Context?)
     Iniciar Sesion 
     # Ver Paque"tes Turisticos Disponibles (Mostrando Rango de Fechas del Paquete Turistico)
     # Reservar Paquete Turistico (confirmacion para reservar usando el usuario actual)
     # Ver Reservas (LIstado de paquetes turisticos asociados a mi usuario)
 # Registrarse
+
+# Al actualizar un destino, actualizar suma dentro de paquete. 
+# Agrgar descripcion de Actividades a paquetes turisticos
+# Limitar fechas de paquetes a solo fecha actual y futura.
