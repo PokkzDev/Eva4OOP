@@ -23,3 +23,11 @@ class DBConn:
     
     def cerrar_conexion(self):
         self.db.close()
+
+if __name__ == "__main__":
+    try:
+        conn = DBConn()
+        print("Conexion exitosa")
+        conn.cerrar_conexion()
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
