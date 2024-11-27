@@ -14,6 +14,7 @@ Menu Inicio Sesion
     # Ver Paquetes Turisticos (Ya Creados)
     # Crear Paquete Turistico (Elegir DESTINO O DESTINOS, Fecha Inicio, Fecha Fin, Precio Total)
     # Actualizar Paquete Turistico (Elegir Paquete Turistico, Elegir Destino, Fecha Inicio, Fecha Fin, Precio Total)
+    # Eliminar Paquete Turistico
     
 Menu Cliente (Ya Creado)(Estados? Context?)
     Iniciar Sesion 

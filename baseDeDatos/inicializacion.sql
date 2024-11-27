@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS Usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    hasDatosPersonales BOOLEAN DEFAULT FALSE
-    rol ENUM('admin', 'cliente') NOT NULL,
+    hasDatosPersonales BOOLEAN DEFAULT FALSE,
+    rol ENUM('admin', 'cliente') NOT NULL
     
 );
 
