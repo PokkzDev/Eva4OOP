@@ -4,7 +4,55 @@ import mysql.connector
 import prettytable as pt
 
 
+class UsuarioModelo:
+    def __init__(self):
+        self.db = DBConn()
 
+    def verificar_usuario(self, usuario, contrasena):
+        try:
+            sql = "SELECT * FROM Usuarios WHERE username = %s"
+            params = (usuario,)
+            user = self.db.query(sql, params)
+            if not user:
+                return False
+            else:
+                user = user[0]
+                stored_password = user[2]
+                if bcrypt.checkpw(contrasena.encode('utf-8'), stored_password.encode('utf-8')):
+                    return user[1], user[3]
+                else:
+                    return False
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return False
+
+    def registrar_usuario(self, usuario, contrasena):
+        try:
+            sql = "SELECT * FROM Usuarios WHERE username = %s"
+            params = (usuario,)
+            if self.db.query(sql, params):
+                return False
+            hashed = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            sql = "INSERT INTO Usuarios (username, password, rol) VALUES (%s, %s, %s)"
+            params = (usuario, hashed, 'cliente')
+            self.db.execute(sql, params)
+            return True
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return False
+    
+    def agregar_datos_personales(self, usuario, nombre, apellido, correo, telefono):
+        try:
+            sql = "INSERT INTO DatosPersonales (username, nombre, apellido, correo, telefono) VALUES (%s, %s, %s, %s, %s)"
+            params = (usuario, nombre, apellido, correo, telefono)
+            self.db.execute(sql, params)
+            return True
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return False
+
+    def cerrar_conexion(self):
+        self.db.cerrar_conexion()
 
 class Destino:
     def __init__(self, nombre, pais, descripcion):
