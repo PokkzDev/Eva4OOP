@@ -30,20 +30,21 @@ class MenuPrincipal:
         usuario = input("Ingrese su usuario: ")
         contrasena = input("Ingrese su contraseña: ")
         if Controlador.iniciar_sesion(usuario, contrasena):
-            print("Inicio de sesión exitoso.")
             Utilidades.pausar()
 
             if usuario == 'admin':
                 menu = MenuAdmin()
                 menu.mostrar_menu()
             else:
-                pass
+                print("Usuario o contraseña incorrectos. Intente de nuevo.")
             
         else:
             print("Usuario o contraseña incorrectos. Intente de nuevo.")
             Utilidades.pausar()
 
     def registrarse(self):
+        #TODO Implementar registro de usuario (usuario, contraseña) sin datos personales
+        #Utilizar el metodo registrarse del controlador
         Utilidades.en_desarrollo()
     
 
@@ -59,7 +60,7 @@ class MenuAdmin:
             opciones =[
                 "1. Menu Destinos Turisticos",
                 "2. Menu Paquetes Turisticos",
-                "S. Salir"
+                "S. Volver"
             ]
 
             for opcion in opciones:
@@ -302,6 +303,20 @@ class MenuAdmin:
         controlador_paquete.cerrar_conexion()
         controlador_destino.cerrar_conexion()
 
+
+
+
+class MenuUsuario:
+    #TODO Implementar menu de usuario
+    # Ver Paquetes Turisticos Disponibles (Mostrando Rango de Fechas del Paquete Turistico)
+    # Reservar Paquete Turistico (confirmacion para reservar usando el usuario actual)
+    # Ver Reservas (LIstado de paquetes turisticos asociados a mi usuario)
+    # IF usuario aun no tiene datos personales, solicitar, y usar el metodo agregar_datos_personales del controlador
+    def __init__(self):
+        pass
+
+    def mostrar_menu(self):
+        pass
 if __name__ == '__main__':
     # bypass and test admin menu
     menu = MenuAdmin()

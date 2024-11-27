@@ -41,10 +41,14 @@ class UsuarioModelo:
             print(f"Error: {err}")
             return False
     
-    def agregar_datos_personales(self, usuario, nombre, apellido, correo, telefono):
+    def agregar_datos_personales(self, usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono):
         try:
-            sql = "INSERT INTO DatosPersonales (username, nombre, apellido, correo, telefono) VALUES (%s, %s, %s, %s, %s)"
-            params = (usuario, nombre, apellido, correo, telefono)
+            sql = "INSERT INTO usuario_datos_personales (usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono) VALUES (%s, %s, %s, %s, %s, %s)"
+            params = (usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono)
+            self.db.execute(sql, params)
+            # change hasDatosPersonales flag
+            sql = "UPDATE Usuarios SET hasDatosPersonales = 1 WHERE id = %s"
+            params = (usuario_id,)
             self.db.execute(sql, params)
             return True
         except mysql.connector.Error as err:
