@@ -3,6 +3,7 @@ import re
 from modelo import UsuarioModelo
 from modelo import DestinoModelo
 from modelo import PaqueteTuristicoModelo
+from modelo import ReservasModelo
 
 class Controlador:
     @staticmethod
@@ -14,14 +15,29 @@ class Controlador:
 
     @staticmethod
     def registrarse(usuario, contrasena):
-        # TODO: Implementar lógica para registrar un nuevo usuario
-        
-        pass
+        usuario_modelo = UsuarioModelo()
+        resultado = usuario_modelo.registrar_usuario(usuario, contrasena)
+        usuario_modelo.cerrar_conexion()
+        return resultado
 
     @staticmethod
     def agregar_datos_personales(usuario, nombre, apellido, correo, telefono):
         # TODO: nombre, apellido, fecha_nacimiento, direccion, telefono, correo
         pass
+
+    @staticmethod
+    def obtener_id_usuario(usuario):
+        usuario_modelo = UsuarioModelo()
+        usuario_id = usuario_modelo.obtener_id_usuario(usuario)
+        usuario_modelo.cerrar_conexion()
+        return usuario_id
+
+    @staticmethod
+    def obtener_usuario_por_id(usuario_id):
+        usuario_modelo = UsuarioModelo()
+        usuario = usuario_modelo.obtener_usuario_por_id(usuario_id)
+        usuario_modelo.cerrar_conexion()
+        return usuario
 
 class ControladorDestino:
     def __init__(self):
@@ -87,6 +103,34 @@ class ControladorPaqueteTuristico:
     def obtener_paquete_turistico(self, id_paquete_turistico):
         return self.paquete_modelo.obtener_paquete_turistico(id_paquete_turistico)
 
+    def buscar_paquete_turistico_por_rango_fechas(self, fecha_inicio, fecha_fin):
+        return self.paquete_modelo.buscar_paquete_turistico_por_rango_fechas(fecha_inicio, fecha_fin)
+
     def cerrar_conexion(self):
         self.paquete_modelo.cerrar_conexion()
         self.destino_modelo.cerrar_conexion()
+
+class ControladorReserva:
+    def __init__(self):
+        self.reserva_modelo = ReservasModelo()
+
+    def obtener_reservas(self):
+        return self.reserva_modelo.obtener_reservas()
+
+    def obtener_reserva(self, id_reserva):
+        return self.reserva_modelo.obtener_reserva(id_reserva)
+
+    def crear_reserva(self, usuario_id, paquete_id, fecha_reserva):
+        return self.reserva_modelo.crear_reserva(usuario_id, paquete_id, fecha_reserva)
+
+    def actualizar_reserva(self, id_reserva, usuario_id, paquete_id, fecha_reserva):
+        return self.reserva_modelo.actualizar_reserva(id_reserva, usuario_id, paquete_id, fecha_reserva)
+
+    def eliminar_reserva(self, id_reserva):
+        return self.reserva_modelo.eliminar_reserva(id_reserva)
+
+    def obtener_reservas_por_usuario(self, usuario_id):
+        return self.reserva_modelo.obtener_reservas_por_usuario(usuario_id)
+
+    def cerrar_conexion(self):
+        self.reserva_modelo.cerrar_conexion()

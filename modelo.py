@@ -55,6 +55,26 @@ class UsuarioModelo:
             print(f"Error: {err}")
             return False
 
+    def obtener_id_usuario(self, usuario):
+        try:
+            sql = "SELECT id FROM Usuarios WHERE username = %s"
+            params = (usuario,)
+            result = self.db.query(sql, params)
+            return result[0][0] if result else None
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return None
+
+    def obtener_usuario_por_id(self, usuario_id):
+        try:
+            sql = "SELECT * FROM Usuarios WHERE id = %s"
+            params = (usuario_id,)
+            result = self.db.query(sql, params)
+            return result[0] if result else None
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return None
+
     def cerrar_conexion(self):
         self.db.cerrar_conexion()
 
@@ -264,6 +284,15 @@ class ReservasModelo:
         params = (id_reserva,)
         self.db.execute(sql, params)
         return True
+
+    def obtener_reservas_por_usuario(self, usuario_id):
+        sql = """
+        SELECT r.id, r.usuario_id, r.paquete_id, r.fecha_reserva
+        FROM Reservas r
+        WHERE r.usuario_id = %s
+        """
+        params = (usuario_id,)
+        return self.db.query(sql, params)
 
     def cerrar_conexion(self):
         self.db.cerrar_conexion()

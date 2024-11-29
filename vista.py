@@ -1,8 +1,10 @@
 from utilidades.utilidades import Utilidades
 from controlador import Controlador
 import prettytable as pt
-from controlador import ControladorDestino, ControladorPaqueteTuristico
+from controlador import ControladorDestino, ControladorPaqueteTuristico, ControladorReserva
+from modelo import UsuarioModelo  # Add this import
 from datetime import datetime
+import pwinput
 
 class MenuPrincipal:
     def __init__(self):
@@ -27,8 +29,9 @@ class MenuPrincipal:
                 print("Opción no válida. Intente de nuevo.")
 
     def iniciar_sesion(self):
+        Utilidades.limpiar_pantalla()
         usuario = input("Ingrese su usuario: ")
-        contrasena = input("Ingrese su contraseña: ")
+        contrasena = pwinput.pwinput("Ingrese su contraseña: ", mask='*')
         if Controlador.iniciar_sesion(usuario, contrasena):
             Utilidades.pausar()
 
@@ -36,16 +39,31 @@ class MenuPrincipal:
                 menu = MenuAdmin()
                 menu.mostrar_menu()
             else:
-                print("Usuario o contraseña incorrectos. Intente de nuevo.")
+                usuario_id = Controlador.obtener_id_usuario(usuario)
+                menu = MenuUsuario(usuario_id)
+                menu.mostrar_menu()
             
         else:
             print("Usuario o contraseña incorrectos. Intente de nuevo.")
             Utilidades.pausar()
 
     def registrarse(self):
-        #TODO Implementar registro de usuario (usuario, contraseña) sin datos personales
-        #Utilizar el metodo registrarse del controlador
-        Utilidades.en_desarrollo()
+        Utilidades.limpiar_pantalla()
+        print("--- Registro de Usuario ---\n")
+        usuario = input("Ingrese su usuario: ")
+        while True:
+            contrasena = pwinput.pwinput("Ingrese su contraseña: ", mask='*')
+            confirm_contrasena = pwinput.pwinput("Confirme su contraseña: ", mask='*')
+            if contrasena == confirm_contrasena:
+                break
+            else:
+                print("Las contraseñas no coinciden. Intente de nuevo.")
+        
+        if Controlador.registrarse(usuario, contrasena):
+            print("Usuario registrado exitosamente.")
+        else:
+            print("Error al registrar el usuario. Intente de nuevo.")
+        Utilidades.pausar()
     
 
 class MenuAdmin:
@@ -307,20 +325,117 @@ class MenuAdmin:
 
 
 class MenuUsuario:
-    #TODO Implementar menu de usuario
-    # Ver Paquetes Turisticos Disponibles (Mostrando Rango de Fechas del Paquete Turistico)
-    # Reservar Paquete Turistico (confirmacion para reservar usando el usuario actual)
-    # Ver Reservas (LIstado de paquetes turisticos asociados a mi usuario)
-    # IF usuario aun no tiene datos personales, solicitar, y usar el metodo agregar_datos_personales del controlador
-    def __init__(self):
-        pass
+    def __init__(self, usuario_id):
+        self.usuario_id = usuario_id
 
     def mostrar_menu(self):
-        pass
+        while True:
+            Utilidades.limpiar_pantalla()
+            print("--- Menu Usuario ---\n")
+            print("1. Ver Paquetes Turisticos Disponibles")
+            print("2. Buscar Paquetes por Rango de Fechas")
+            print("3. Reservar Paquete Turistico")
+            print("4. Ver Reservas")
+            print("S. Salir")
+            opcion = input("\nSeleccione una opción: ")
+
+            if opcion == '1':
+                self.ver_paquetes_turisticos()
+            elif opcion == '2':
+                self.buscar_paquetes_por_rango_fechas()
+            elif opcion == '3':
+                self.reservar_paquete_turistico()
+            elif opcion == '4':  
+                self.ver_reservas()
+            elif opcion.lower() == 's':
+                break
+            else:
+                print("Opción no válida. Intente de nuevo.")
+                Utilidades.pausar()
+
+    def ver_paquetes_turisticos(self):
+        controlador_paquete = ControladorPaqueteTuristico()
+        paquetes = controlador_paquete.obtener_paquetes_turisticos()
+        table = pt.PrettyTable()
+        table.field_names = ["ID", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos"]
+        for paquete in paquetes:
+            table.add_row(paquete)
+        print(table)
+        Utilidades.pausar()
+        controlador_paquete.cerrar_conexion()
+
+    def reservar_paquete_turistico(self):
+        controlador_usuario = Controlador()
+        usuario_modelo = UsuarioModelo()
+        usuario = usuario_modelo.obtener_usuario_por_id(self.usuario_id)
+        if not usuario[3]:  # Check if hasDatosPersonales is False (index 3 for hasDatosPersonales)
+            print("Debe completar sus datos personales antes de realizar una reserva.")
+            nombre = input("Ingrese su nombre: ")
+            apellido = input("Ingrese su apellido: ")
+            fecha_nacimiento = input("Ingrese su fecha de nacimiento (YYYY-MM-DD): ")
+            direccion = input("Ingrese su dirección: ")
+            telefono = input("Ingrese su teléfono: ")
+            if controlador_usuario.agregar_datos_personales(self.usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono):
+                print("Datos personales agregados exitosamente.")
+            else:
+                print("Error al agregar los datos personales.")
+                Utilidades.pausar()
+                return
+        usuario_modelo.cerrar_conexion()
+
+        controlador_paquete = ControladorPaqueteTuristico()
+        controlador_reserva = ControladorReserva()
+        paquetes = controlador_paquete.obtener_paquetes_turisticos()
+        table = pt.PrettyTable()
+        table.field_names = ["ID", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos"]
+        for paquete in paquetes:
+            table.add_row(paquete)
+        print(table)
+        id_paquete = input("Ingrese el ID del paquete a reservar: ")
+
+        # Check if the user has already reserved this package
+        reservas = controlador_reserva.obtener_reservas_por_usuario(self.usuario_id)
+        if any(reserva[2] == int(id_paquete) for reserva in reservas):
+            print("Ya ha reservado este paquete anteriormente.")
+            Utilidades.pausar()
+            controlador_paquete.cerrar_conexion()
+            controlador_reserva.cerrar_conexion()
+            return
+
+        fecha_reserva = datetime.now().strftime("%Y-%m-%d")
+        if controlador_reserva.crear_reserva(self.usuario_id, id_paquete, fecha_reserva):
+            print("Reserva realizada exitosamente.")
+        else:
+            print("Error al realizar la reserva.")
+        Utilidades.pausar()
+        controlador_paquete.cerrar_conexion()
+        controlador_reserva.cerrar_conexion()
+
+    def ver_reservas(self):
+        controlador_reserva = ControladorReserva()  # Use ControladorReserva
+        reservas = controlador_reserva.obtener_reservas()
+        table = pt.PrettyTable()
+        table.field_names = ["ID", "Usuario", "Fecha Inicio", "Fecha Fin", "Fecha Reserva"]
+        for reserva in reservas:
+            table.add_row(reserva)
+        print(table)
+        Utilidades.pausar()
+        controlador_reserva.cerrar_conexion()
+
+    def buscar_paquetes_por_rango_fechas(self):  # Add this method
+        controlador_paquete = ControladorPaqueteTuristico()
+        fecha_inicio = input("Ingrese la fecha de inicio (YYYY-MM-DD): ")
+        fecha_fin = input("Ingrese la fecha de fin (YYYY-MM-DD): ")
+        paquetes = controlador_paquete.buscar_paquete_turistico_por_rango_fechas(fecha_inicio, fecha_fin)
+        table = pt.PrettyTable()
+        table.field_names = ["ID", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos", "Actividades"]
+        for paquete in paquetes:
+            table.add_row(paquete)
+        print(table)
+        Utilidades.pausar()
+        controlador_paquete.cerrar_conexion()
+
 if __name__ == '__main__':
     # bypass and test admin menu
     menu = MenuAdmin()
     menu.mostrar_menu()
-
-
-
