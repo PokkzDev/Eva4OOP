@@ -1,0 +1,124 @@
+# Use Case Diagram
+
+## Actors:
+- Usuario
+- Administrador
+
+## Use Cases:
+- Iniciar Sesion
+- Registrarse
+- Ver Paquetes Turisticos Disponibles
+- Buscar Paquetes por Rango de Fechas
+- Reservar Paquete Turistico
+- Ver Reservas
+- Cancelar Reserva
+- Menu Destinos Turisticos (Admin)
+  - Ver Destinos Turisticos
+  - Agregar Destino Turistico
+  - Modificar Destino Turistico
+  - Eliminar Destino Turistico
+- Menu Paquetes Turisticos (Admin)
+  - Ver Paquetes Turisticos
+  - Agregar Paquete Turistico
+  - Modificar Paquete Turistico
+  - Eliminar Paquete Turistico
+
+## Relationships:
+- Usuario -> Iniciar Sesion
+- Usuario -> Registrarse
+- Usuario -> Ver Paquetes Turisticos Disponibles
+- Usuario -> Buscar Paquetes por Rango de Fechas
+- Usuario -> Reservar Paquete Turistico
+- Usuario -> Ver Reservas
+- Usuario -> Cancelar Reserva
+- Administrador -> Iniciar Sesion
+- Administrador -> Menu Destinos Turisticos
+  - Menu Destinos Turisticos -> Ver Destinos Turisticos
+  - Menu Destinos Turisticos -> Agregar Destino Turistico
+  - Menu Destinos Turisticos -> Modificar Destino Turistico
+  - Menu Destinos Turisticos -> Eliminar Destino Turistico
+- Administrador -> Menu Paquetes Turisticos
+  - Menu Paquetes Turisticos -> Ver Paquetes Turisticos
+  - Menu Paquetes Turisticos -> Agregar Paquete Turistico
+  - Menu Paquetes Turisticos -> Modificar Paquete Turistico
+  - Menu Paquetes Turisticos -> Eliminar Paquete Turistico
+
+# Interactions
+
+## Iniciar Sesion
+1. Usuario ingresa su nombre de usuario y contraseña.
+2. El sistema verifica las credenciales.
+3. Si las credenciales son correctas, el sistema muestra el menú correspondiente (Usuario o Administrador).
+4. Si las credenciales son incorrectas, el sistema muestra un mensaje de error.
+
+## Registrarse
+1. Usuario ingresa su nombre de usuario y contraseña.
+2. El sistema verifica si el nombre de usuario ya existe.
+3. Si el nombre de usuario no existe, el sistema registra al usuario.
+4. Si el nombre de usuario ya existe, el sistema muestra un mensaje de error.
+
+## Ver Paquetes Turisticos Disponibles
+1. Usuario selecciona la opción de ver paquetes turísticos disponibles.
+2. El sistema muestra una lista de paquetes turísticos disponibles.
+
+## Buscar Paquetes por Rango de Fechas
+1. Usuario ingresa una fecha de inicio y una fecha de fin.
+2. El sistema muestra una lista de paquetes turísticos disponibles en ese rango de fechas.
+
+## Reservar Paquete Turistico
+1. Usuario selecciona un paquete turístico.
+2. El sistema verifica si el usuario ha completado sus datos personales.
+3. Si el usuario no ha completado sus datos personales, el sistema solicita los datos personales.
+4. El sistema verifica si el usuario ya ha reservado el paquete seleccionado.
+5. Si el usuario no ha reservado el paquete, el sistema crea una reserva.
+6. Si el usuario ya ha reservado el paquete, el sistema muestra un mensaje de error.
+
+## Ver Reservas
+1. Usuario selecciona la opción de ver reservas.
+2. El sistema muestra una lista de reservas del usuario.
+
+## Cancelar Reserva
+1. Usuario selecciona una reserva.
+2. El sistema cancela la reserva seleccionada.
+
+## Menu Destinos Turisticos (Admin)
+1. Administrador selecciona la opción de menú destinos turísticos.
+2. El sistema muestra las opciones de ver, agregar, modificar y eliminar destinos turísticos.
+
+### Ver Destinos Turisticos
+1. Administrador selecciona la opción de ver destinos turísticos.
+2. El sistema muestra una lista de destinos turísticos.
+
+### Agregar Destino Turistico
+1. Administrador ingresa los datos del nuevo destino turístico.
+2. El sistema agrega el nuevo destino turístico.
+
+### Modificar Destino Turistico
+1. Administrador selecciona un destino turístico.
+2. Administrador ingresa los nuevos datos del destino turístico.
+3. El sistema actualiza los datos del destino turístico.
+
+### Eliminar Destino Turistico
+1. Administrador selecciona un destino turístico.
+2. El sistema elimina el destino turístico seleccionado.
+
+## Menu Paquetes Turisticos (Admin)
+1. Administrador selecciona la opción de menú paquetes turísticos.
+2. El sistema muestra las opciones de ver, agregar, modificar y eliminar paquetes turísticos.
+
+### Ver Paquetes Turisticos
+1. Administrador selecciona la opción de ver paquetes turísticos.
+2. El sistema muestra una lista de paquetes turísticos.
+
+### Agregar Paquete Turistico
+1. Administrador ingresa los datos del nuevo paquete turístico.
+2. El sistema agrega el nuevo paquete turístico.
+
+### Modificar Paquete Turistico
+1. Administrador selecciona un paquete turístico.
+2. Administrador ingresa los nuevos datos del paquete turístico.
+3. El sistema actualiza los datos del paquete turístico.
+
+### Eliminar Paquete Turistico
+1. Administrador selecciona un paquete turístico.
+2. El sistema elimina el paquete turístico seleccionado.
