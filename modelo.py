@@ -240,6 +240,16 @@ class PaqueteTuristicoModelo:
             print(f"Error: {err}")
             return False
 
+    def obtener_destinos_de_paquete(self, paquete_id):
+        sql = """
+        SELECT d.id, d.nombre, d.descripciones, d.actividades, d.costo
+        FROM PaqueteDestino pd
+        JOIN Destinos d ON pd.destino_id = d.id
+        WHERE pd.paquete_id = %s
+        """
+        params = (paquete_id,)
+        return self.db.query(sql, params)
+
     def cerrar_conexion(self):
         self.db.cerrar_conexion()
 

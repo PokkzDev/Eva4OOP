@@ -33,8 +33,8 @@ class MenuPrincipal:
         usuario = input("Ingrese su usuario: ")
         contrasena = pwinput.pwinput("Ingrese su contraseña: ", mask='*')
         if Controlador.iniciar_sesion(usuario, contrasena):
+            print("Inicio de sesión exitoso.")
             Utilidades.pausar()
-
             if usuario == 'admin':
                 menu = MenuAdmin()
                 menu.mostrar_menu()
@@ -336,6 +336,7 @@ class MenuUsuario:
             print("2. Buscar Paquetes por Rango de Fechas")
             print("3. Reservar Paquete Turistico")
             print("4. Ver Reservas")
+            print("5. Cancelar Reserva")  # Add this line
             print("S. Salir")
             opcion = input("\nSeleccione una opción: ")
 
@@ -347,6 +348,8 @@ class MenuUsuario:
                 self.reservar_paquete_turistico()
             elif opcion == '4':  
                 self.ver_reservas()
+            elif opcion == '5':  # Add this block
+                self.cancelar_reserva()
             elif opcion.lower() == 's':
                 break
             else:
@@ -368,7 +371,7 @@ class MenuUsuario:
         controlador_usuario = Controlador()
         usuario_modelo = UsuarioModelo()
         usuario = usuario_modelo.obtener_usuario_por_id(self.usuario_id)
-        if not usuario[3]:  # Check if hasDatosPersonales is False (index 3 for hasDatosPersonales)
+        if not usuario[3]: 
             print("Debe completar sus datos personales antes de realizar una reserva.")
             nombre = input("Ingrese su nombre: ")
             apellido = input("Ingrese su apellido: ")
@@ -393,6 +396,13 @@ class MenuUsuario:
         print(table)
         id_paquete = input("Ingrese el ID del paquete a reservar: ")
 
+        if not id_paquete.strip():  # Check for empty input
+            print("No se ingresó ningún ID de paquete. Operación cancelada.")
+            Utilidades.pausar()
+            controlador_paquete.cerrar_conexion()
+            controlador_reserva.cerrar_conexion()
+            return
+
         # Check if the user has already reserved this package
         reservas = controlador_reserva.obtener_reservas_por_usuario(self.usuario_id)
         if any(reserva[2] == int(id_paquete) for reserva in reservas):
@@ -412,12 +422,19 @@ class MenuUsuario:
         controlador_reserva.cerrar_conexion()
 
     def ver_reservas(self):
-        controlador_reserva = ControladorReserva()  # Use ControladorReserva
-        reservas = controlador_reserva.obtener_reservas()
+        controlador_reserva = ControladorReserva()
+        reservas = controlador_reserva.obtener_reservas_por_usuario(self.usuario_id)
         table = pt.PrettyTable()
-        table.field_names = ["ID", "Usuario", "Fecha Inicio", "Fecha Fin", "Fecha Reserva"]
+        table.field_names = ["ID Reserva", "Fecha Reserva", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos", "Actividades"]
         for reserva in reservas:
-            table.add_row(reserva)
+            paquete_id = reserva[2]
+            controlador_paquete = ControladorPaqueteTuristico()
+            paquete = controlador_paquete.obtener_paquete_turistico(paquete_id)
+            destinos = controlador_paquete.obtener_destinos_de_paquete(paquete_id)
+            destinos_str = ",\n".join([destino[1] for destino in destinos])
+            actividades_str = ",\n".join([destino[3] for destino in destinos])
+            table.add_row([reserva[0], reserva[3], paquete[1], paquete[2], paquete[3], destinos_str, actividades_str])
+            controlador_paquete.cerrar_conexion()
         print(table)
         Utilidades.pausar()
         controlador_reserva.cerrar_conexion()
@@ -434,6 +451,36 @@ class MenuUsuario:
         print(table)
         Utilidades.pausar()
         controlador_paquete.cerrar_conexion()
+
+    def cancelar_reserva(self):  # Add this method
+        controlador_reserva = ControladorReserva()
+        reservas = controlador_reserva.obtener_reservas_por_usuario(self.usuario_id)
+        table = pt.PrettyTable()
+        table.field_names = ["ID Reserva", "Fecha Reserva", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos", "Actividades"]
+        for reserva in reservas:
+            paquete_id = reserva[2]
+            controlador_paquete = ControladorPaqueteTuristico()
+            paquete = controlador_paquete.obtener_paquete_turistico(paquete_id)
+            destinos = controlador_paquete.obtener_destinos_de_paquete(paquete_id)
+            destinos_str = ",\n".join([destino[1] for destino in destinos])
+            actividades_str = ",\n".join([destino[3] for destino in destinos])
+            table.add_row([reserva[0], reserva[3], paquete[1], paquete[2], paquete[3], destinos_str, actividades_str])
+            controlador_paquete.cerrar_conexion()
+        print(table)
+        id_reserva = input("Ingrese el ID de la reserva a cancelar: ")
+
+        if not id_reserva.strip():  # Check for empty input
+            print("No se ingresó ningún ID de reserva. Operación cancelada.")
+            Utilidades.pausar()
+            controlador_reserva.cerrar_conexion()
+            return
+
+        if controlador_reserva.eliminar_reserva(int(id_reserva)):
+            print("Reserva cancelada exitosamente.")
+        else:
+            print("Error al cancelar la reserva.")
+        Utilidades.pausar()
+        controlador_reserva.cerrar_conexion()
 
 if __name__ == '__main__':
     # bypass and test admin menu

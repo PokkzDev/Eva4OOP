@@ -21,9 +21,11 @@ class Controlador:
         return resultado
 
     @staticmethod
-    def agregar_datos_personales(usuario, nombre, apellido, correo, telefono):
-        # TODO: nombre, apellido, fecha_nacimiento, direccion, telefono, correo
-        pass
+    def agregar_datos_personales(usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono):
+        usuario_modelo = UsuarioModelo()
+        resultado = usuario_modelo.agregar_datos_personales(usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono)
+        usuario_modelo.cerrar_conexion()
+        return resultado
 
     @staticmethod
     def obtener_id_usuario(usuario):
@@ -106,6 +108,9 @@ class ControladorPaqueteTuristico:
     def buscar_paquete_turistico_por_rango_fechas(self, fecha_inicio, fecha_fin):
         return self.paquete_modelo.buscar_paquete_turistico_por_rango_fechas(fecha_inicio, fecha_fin)
 
+    def obtener_destinos_de_paquete(self, paquete_id):
+        return self.paquete_modelo.obtener_destinos_de_paquete(paquete_id)
+
     def cerrar_conexion(self):
         self.paquete_modelo.cerrar_conexion()
         self.destino_modelo.cerrar_conexion()
@@ -128,6 +133,9 @@ class ControladorReserva:
 
     def eliminar_reserva(self, id_reserva):
         return self.reserva_modelo.eliminar_reserva(id_reserva)
+
+    def cancelar_reserva(self, id_reserva):
+        return self.reserva_modelo.cancelar_reserva(id_reserva)
 
     def obtener_reservas_por_usuario(self, usuario_id):
         return self.reserva_modelo.obtener_reservas_por_usuario(usuario_id)
