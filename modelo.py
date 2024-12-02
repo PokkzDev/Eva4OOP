@@ -42,15 +42,39 @@ class UsuarioModelo:
             print(f"Error: {err}")
             return False
     
-    def agregar_datos_personales(self, usuario, nombre, apellido, correo, telefono):
+    def agregar_datos_personales(self, usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono):
         try:
-            sql = "INSERT INTO DatosPersonales (username, nombre, apellido, correo, telefono) VALUES (%s, %s, %s, %s, %s)"
-            params = (usuario, nombre, apellido, correo, telefono)
+            sql = "INSERT INTO usuario_datos_personales (usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono) VALUES (%s, %s, %s, %s, %s, %s)"
+            params = (usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono)
+            self.db.execute(sql, params)
+            # change hasDatosPersonales flag
+            sql = "UPDATE Usuarios SET hasDatosPersonales = 1 WHERE id = %s"
+            params = (usuario_id,)
             self.db.execute(sql, params)
             return True
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             return False
+
+    def obtener_id_usuario(self, usuario):
+        try:
+            sql = "SELECT id FROM Usuarios WHERE username = %s"
+            params = (usuario,)
+            result = self.db.query(sql, params)
+            return result[0][0] if result else None
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return None
+
+    def obtener_usuario_por_id(self, usuario_id):
+        try:
+            sql = "SELECT * FROM Usuarios WHERE id = %s"
+            params = (usuario_id,)
+            result = self.db.query(sql, params)
+            return result[0] if result else None
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return None
 
     def cerrar_conexion(self):
         self.db.cerrar_conexion()
@@ -217,6 +241,16 @@ class PaqueteTuristicoModelo:
             print(f"Error: {err}")
             return False
 
+    def obtener_destinos_de_paquete(self, paquete_id):
+        sql = """
+        SELECT d.id, d.nombre, d.descripciones, d.actividades, d.costo
+        FROM PaqueteDestino pd
+        JOIN Destinos d ON pd.destino_id = d.id
+        WHERE pd.paquete_id = %s
+        """
+        params = (paquete_id,)
+        return self.db.query(sql, params)
+
     def cerrar_conexion(self):
         self.db.cerrar_conexion()
 
@@ -261,6 +295,15 @@ class ReservasModelo:
         params = (id_reserva,)
         self.db.execute(sql, params)
         return True
+
+    def obtener_reservas_por_usuario(self, usuario_id):
+        sql = """
+        SELECT r.id, r.usuario_id, r.paquete_id, r.fecha_reserva
+        FROM Reservas r
+        WHERE r.usuario_id = %s
+        """
+        params = (usuario_id,)
+        return self.db.query(sql, params)
 
     def cerrar_conexion(self):
         self.db.cerrar_conexion()
