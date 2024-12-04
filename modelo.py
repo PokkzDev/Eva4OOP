@@ -19,7 +19,7 @@ class UsuarioModelo:
                 user = user[0]
                 stored_password = user[2]
                 if bcrypt.checkpw(contrasena.encode('utf-8'), stored_password.encode('utf-8')):
-                    return user[1], user[3]
+                    return user[1], user[3], user[4]
                 else:
                     return False
         except mysql.connector.Error as err:
@@ -32,9 +32,15 @@ class UsuarioModelo:
             params = (usuario,)
             if self.db.query(sql, params):
                 return False
+            sql = "SELECT * FROM Usuarios"
+            resultado = self.db.query(sql)
             hashed = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            sql = "INSERT INTO Usuarios (username, password, rol) VALUES (%s, %s, %s)"
-            params = (usuario, hashed, 'cliente')
+            if resultado == []:
+                sql = "INSERT INTO Usuarios (username, password, rol) VALUES (%s, %s, %s)"
+                params = (usuario, hashed, 'admin')
+            else:
+                sql = "INSERT INTO Usuarios (username, password, rol) VALUES (%s, %s, %s)"
+                params = (usuario, hashed, 'cliente')
             self.db.execute(sql, params)
             return True
         except mysql.connector.Error as err:
@@ -70,6 +76,8 @@ class UsuarioModelo:
             sql = "SELECT * FROM Usuarios WHERE id = %s"
             params = (usuario_id,)
             result = self.db.query(sql, params)
+            print(result)
+            input(2)
             return result[0] if result else None
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -232,8 +240,13 @@ class PaqueteTuristicoModelo:
 
     def eliminar_destinos_de_paquete(self, paquete_id):
         try:
-            sql = "DELETE FROM PaqueteDestino WHERE paquete_id = %s"
+            sql = "SELECT paquete_id FROM PaqueteDestino WHERE paquete_id =%s"
             params = (paquete_id,)
+            resultado = self.db.query(sql, params)
+            if resultado == []:
+                print("No existe el paquete turistico seleccionado...")
+                return False
+            sql = "DELETE FROM PaqueteDestino WHERE paquete_id = %s"
             self.db.execute(sql, params)
             return True
         except mysql.connector.Error as err:
