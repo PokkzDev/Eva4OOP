@@ -1,9 +1,9 @@
 # Separalo en archivos correspondientes de cada clase este archivo en archivos distintos.
 
-from models.modelo import UsuarioModelo
-from models.modelo import DestinoModelo
-from models.modelo import PaqueteTuristicoModelo
-from models.modelo import ReservasModelo
+from models.usuario import UsuarioModelo
+from models.destino import DestinoModelo
+from models.paquete_turistico import PaqueteTuristicoModelo
+from models.reservas import ReservasModelo
 
 class Controlador:
     @staticmethod
@@ -48,7 +48,9 @@ class ControladorDestino:
         self.destino_modelo = DestinoModelo()
 
     def obtener_destinos(self):
-        return self.destino_modelo.obtener_destinos()
+        destinos = self.destino_modelo.obtener_destinos()
+        # Retorna directamente las instancias de Destino
+        return destinos
 
     def crear_destino(self, nombre, descripcion, actividades, costo):
         return self.destino_modelo.crear_destino(nombre, descripcion, actividades, costo)

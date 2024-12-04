@@ -1,4 +1,4 @@
-from view.vista import MenuPrincipal
+from view.menu_principal import MenuPrincipal
 
 if __name__ == '__main__':
     menu = MenuPrincipal()

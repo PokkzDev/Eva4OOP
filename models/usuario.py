@@ -11,9 +11,15 @@ class Usuario:
         self.__rol = rol  # Atributo privado
         self.__hasDatosPersonales = hasDatosPersonales  # Atributo privado
 
-    def verificar_password(self, contrasena):
-        """Verifica si la contraseña proporcionada coincide con la almacenada."""
-        return bcrypt.checkpw(contrasena.encode('utf-8'), self.__password.encode('utf-8'))
+    def verificar_usuario(self, username, contrasena):
+        """
+        Verifica si el nombre de usuario y la contraseña proporcionados coinciden
+        con los almacenados en el objeto.
+        """
+        return (
+            username == self.username and
+            bcrypt.checkpw(contrasena.encode('utf-8'), self.__password.encode('utf-8'))
+        )
 
     def get_rol(self):
         """Retorna el rol del usuario."""
@@ -75,21 +81,18 @@ class UsuarioModelo:
     def __init__(self):
         self.db = DBConn()
 
-    def verificar_usuario(self, usuario, contrasena):
-        """Verifica si el usuario existe y si la contraseña es correcta."""
+    def verificar_usuario(self, username, contrasena):
+        """Verifica si el username existe y si la contraseña es correcta."""
         try:
             sql = "SELECT * FROM Usuarios WHERE username = %s"
-            params = (usuario,)
-            user_data = self.db.query(sql, params)
-            if not user_data:
-                return False
-            else:
-                user_data = user_data[0]
-                user = Usuario(id=user_data[0], username=user_data[1], password=user_data[2], rol=user_data[3], hasDatosPersonales=user_data[4])
-                if user.verificar_password(contrasena):
-                    return user
-                else:
-                    return False
+            params = (username,)
+            result = self.db.query(sql, params)
+            if not result:
+                return None
+            
+            user_data = result[0]
+            user = Usuario(id=user_data[0], username=user_data[1], password=user_data[2], rol=user_data[3], hasDatosPersonales=user_data[4],)
+            return user if user.verificar_usuario(username, contrasena) else None
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             return False
@@ -118,7 +121,7 @@ class UsuarioModelo:
             # Inserción de datos personales en la base de datos
             sql = "INSERT INTO usuario_datos_personales (usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono) VALUES (%s, %s, %s, %s, %s, %s)"
             params = (datos_personales.get_usuario_id(), datos_personales.get_nombre(), datos_personales.get_apellido(),
-                      datos_personales.get_fecha_nacimiento(), datos_personales.get_direccion(), datos_personales.get_telefono())
+                    datos_personales.get_fecha_nacimiento(), datos_personales.get_direccion(), datos_personales.get_telefono())
             self.db.execute(sql, params)
 
             # Cambiar el flag hasDatosPersonales en la tabla Usuarios

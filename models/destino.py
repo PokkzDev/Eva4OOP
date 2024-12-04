@@ -1,6 +1,6 @@
 # destino_modelo.py
 import mysql.connector
-from db_conn import DBConn
+from .db_conn import DBConn
 
 
 class Destino:
@@ -16,8 +16,21 @@ class DestinoModelo:
 
     def obtener_destinos(self):
         try:
-            sql = "SELECT * FROM Destinos"
-            return self.db.query(sql)
+            sql = "SELECT id, nombre, descripcion, actividades, costo FROM Destinos"
+            resultados = self.db.query(sql)
+            destinos = []
+            for row in resultados:
+                # Crear instancias de Destino con los datos de la consulta
+                destino = Destino(
+                    id=row[0],
+                    nombre=row[1],
+                    pais=None,  # Si no hay 'pais', puedes asignar None o ajustarlo según tu estructura
+                    descripcion=row[2],
+                )
+                destino.actividades = row[3]
+                destino.costo = row[4]
+                destinos.append(destino)
+            return destinos
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             return []

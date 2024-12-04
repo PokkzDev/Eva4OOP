@@ -1,6 +1,6 @@
 # paquete_turistico_modelo.py
 import mysql.connector
-from db_conn import DBConn
+from .db_conn import DBConn
 
 
 class PaqueteTuristico:
