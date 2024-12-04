@@ -46,7 +46,8 @@ class MenuAdmin:
             table = pt.PrettyTable()
             table.field_names = ["ID", "Nombre", "Descripción", "Actividades", "Costo"]
             for destino in destinos:
-                table.add_row(destino)
+                # Accede a los atributos de cada instancia de Destino
+                table.add_row([destino.id, destino.nombre, destino.descripcion, destino.actividades, destino.costo])
             return table
 
         while True:
@@ -99,10 +100,10 @@ class MenuAdmin:
                     print("Destino no encontrado.")
                     time.sleep(0.75)
                     continue
-                nombre = input(f"Ingrese el nuevo nombre del destino [{destino[1]}]: ") or destino[1]
-                descripcion = input(f"Ingrese la nueva descripción del destino [{destino[2]}]: ") or destino[2]
-                actividades = input(f"Ingrese las nuevas actividades del destino [{destino[3]}]: ") or destino[3]
-                costo = input(f"Ingrese el nuevo costo del destino [{destino[4]}]: ") or destino[4]
+                nombre = input(f"Ingrese el nuevo nombre del destino [{destino['nombre']}]: ") or destino['nombre']
+                descripcion = input(f"Ingrese la nueva descripción del destino [{destino['descripciones']}]: ") or destino['descripciones']
+                actividades = input(f"Ingrese las nuevas actividades del destino [{destino['actividades']}]: ") or destino['actividades']
+                costo = input(f"Ingrese el nuevo costo del destino [{destino['costo']}]: ") or destino['costo']
                 if controlador_destino.actualizar_destino(id_destino, nombre, descripcion, actividades, costo):
                     print("Destino modificado exitosamente.")
                 else:
@@ -135,7 +136,7 @@ class MenuAdmin:
             table = pt.PrettyTable()
             table.field_names = ["ID", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos"]
             for paquete in paquetes:
-                table.add_row(paquete)
+                table.add_row([paquete['id'], paquete['fecha_inicio'], paquete['fecha_fin'], paquete['precio_total'], paquete['destinos']])
             return table
         while True:
             Utilidades.limpiar_pantalla()
@@ -189,7 +190,7 @@ class MenuAdmin:
                     continue
                 print("Seleccione destinos por ID separados por comas:")
                 for destino in destinos:
-                    print(f"{destino[0]}. {destino[1]} - {destino[4]}")
+                    print(f"{destino.id}. {destino.nombre} - {destino.costo}")
                 seleccion = input("Ingrese los IDs de los destinos: ")
                 try:
                     destino_ids = [int(id.strip()) for id in seleccion.split(',')]
@@ -197,12 +198,14 @@ class MenuAdmin:
                     print("Selección inválida de destinos.")
                     time.sleep(0.75)
                     continue
-
+                
                 if controlador_paquete.crear_paquete_turistico(fecha_inicio, fecha_fin, destino_ids):
                     print("Paquete turistico agregado exitosamente.")
                 else:
                     print("Error al agregar el paquete turistico.")
+                    input(2)
                 time.sleep(0.75)
+
             elif opcion == '3':
                 Utilidades.limpiar_pantalla()
                 print("--- Modificar Paquete Turistico ---\n")

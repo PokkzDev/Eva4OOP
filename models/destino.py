@@ -4,10 +4,15 @@ from .db_conn import DBConn
 
 
 class Destino:
-    def __init__(self, nombre, pais, descripcion):
+    def __init__(self, id, nombre, descripcion, actividades=None, costo=None,):
+        self.id = id
         self.nombre = nombre
-        self.pais = pais
         self.descripcion = descripcion
+        self.actividades = actividades
+        self.costo = costo
+    
+    def __str__(self):
+        return f"Destino(id={self.id}, nombre={self.nombre}, descripcion={self.descripcion}, actividades={self.actividades}, costo={self.costo})"
 
 
 class DestinoModelo: 
@@ -16,24 +21,24 @@ class DestinoModelo:
 
     def obtener_destinos(self):
         try:
-            sql = "SELECT id, nombre, descripcion, actividades, costo FROM Destinos"
+            sql = "SELECT id, nombre, descripciones, actividades, costo FROM Destinos"
             resultados = self.db.query(sql)
             destinos = []
             for row in resultados:
-                # Crear instancias de Destino con los datos de la consulta
+                # Asumiendo que 'row' es un diccionario con las claves 'id', 'nombre', 'descripcion', etc.
                 destino = Destino(
-                    id=row[0],
-                    nombre=row[1],
-                    pais=None,  # Si no hay 'pais', puedes asignar None o ajustarlo según tu estructura
-                    descripcion=row[2],
+                    id=row['id'],  # Usar las claves correspondientes
+                    nombre=row['nombre'],
+                    descripcion=row['descripciones'],  # Si es un diccionario
                 )
-                destino.actividades = row[3]
-                destino.costo = row[4]
+                destino.actividades = row['actividades']
+                destino.costo = row['costo']
                 destinos.append(destino)
             return destinos
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             return []
+
 
     def obtener_destino(self, id_destino):
         try:

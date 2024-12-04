@@ -1,5 +1,5 @@
-from view.menu_principal import MenuPrincipal
+from view.menu_principal import MenuPrincipal, MenuAdmin
 
 if __name__ == '__main__':
-    menu = MenuPrincipal()
-    menu.menu()
+    menu = MenuAdmin()
+    menu.mostrar_menu()

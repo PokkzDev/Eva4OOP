@@ -23,7 +23,8 @@ class PaqueteTuristicoModelo:
         LEFT JOIN Destinos d ON pd.destino_id = d.id
         GROUP BY p.id
         """
-        return self.db.query(sql)
+        resultado = self.db.query(sql)
+        return resultado
 
     def obtener_paquete_turistico(self, id_paquete_turistico):
         sql = "SELECT id, fecha_inicio, fecha_fin, precio_total FROM PaquetesTuristicos WHERE id = %s"
@@ -33,13 +34,18 @@ class PaqueteTuristicoModelo:
 
     def crear_paquete_turistico(self, fecha_inicio, fecha_fin, precio_total):
         try:
+            # Ejecuta la consulta para insertar un nuevo paquete turístico
             sql = "INSERT INTO PaquetesTuristicos (fecha_inicio, fecha_fin, precio_total) VALUES (%s, %s, %s)"
             params = (fecha_inicio, fecha_fin, precio_total)
-            cursor = self.db.execute(sql, params)  # Now returns cursor
-            return cursor.lastrowid  # Correctly access lastrowid
+            
+            # Ejecuta la inserción, pero no necesitas el lastrowid
+            resultado =self.db.execute(sql, params)
+            print(resultado)
+            input(2.01)
+            return True  # Indica que la inserción fue exitosa
         except mysql.connector.Error as err:
-            print(f"Error: {err}")
-            return None
+            print(f"Error al crear paquete turístico: {err}")
+            return False
 
     def actualizar_paquete_turistico(self, id_paquete_turistico, fecha_inicio, fecha_fin, precio_total):
         sql = "UPDATE PaquetesTuristicos SET fecha_inicio = %s, fecha_fin = %s, precio_total = %s WHERE id = %s"
@@ -69,8 +75,10 @@ class PaqueteTuristicoModelo:
         try:
             sql = "INSERT INTO PaqueteDestino (paquete_id, destino_id) VALUES (%s, %s)"
             params = (paquete_id, destino_id)
-            self.db.execute(sql, params)
-            return True
+            resultado = self.db.execute(sql, params)
+            print(resultado)
+            input(2.11)
+            return resultado['id']
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             return False
