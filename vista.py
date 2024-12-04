@@ -1,18 +1,18 @@
-from utilidades.utilidades import Utilidades
-from controlador import Controlador
-import prettytable as pt
+from utilidades.utilidades import Utilidades #Importación de carpeta utilidades y módulo utilidades
+from controlador import Controlador #Importación de módulos
+import prettytable as pt # Para crear tablas
 from controlador import ControladorDestino, ControladorPaqueteTuristico, ControladorReserva
-from modelo import UsuarioModelo  # Add this import
-from datetime import datetime
-import pwinput
+from modelo import UsuarioModelo  # Importación de módulos
+from datetime import datetime # Biblioteca para trabajar con fechas y horas
+import pwinput # Biblioteca para ocultar contraseñas
 
-class MenuPrincipal:
-    def __init__(self):
-        pass
+class MenuPrincipal: 
+    def __init__(self): # Constructor, inicializa la clase MenuPrincipal
+        pass # No ejecuta ninguna operación
 
-    def menu(self):
+    def menu(self): 
         while True:
-            Utilidades.limpiar_pantalla()
+            Utilidades.limpiar_pantalla()  # Limpiador de pantalla al momento de mostrar nuevamente el menu
             print("--- Menu Principal ---\n")
             print("1. Iniciar Sesion")
             print("2. Registrarse")
@@ -30,18 +30,18 @@ class MenuPrincipal:
 
     def iniciar_sesion(self):
         Utilidades.limpiar_pantalla()
-        usuario = input("Ingrese su usuario: ")
-        contrasena = pwinput.pwinput("Ingrese su contraseña: ", mask='*')
-        if Controlador.iniciar_sesion(usuario, contrasena):
+        usuario = input("Ingrese su usuario: ") # Entrada del nombre del usuario
+        contrasena = pwinput.pwinput("Ingrese su contraseña: ", mask='*') # Entrada de la contraseña del usuario ocultada con *
+        if Controlador.iniciar_sesion(usuario, contrasena): # verificación, cuando la condición es verdadera se muestra el mensaje "Inicio de sesión exitoso"
             print("Inicio de sesión exitoso.")
-            Utilidades.pausar()
-            if usuario == 'admin':
-                menu = MenuAdmin()
-                menu.mostrar_menu()
+            Utilidades.pausar() # Pausa la ejecución del programa
+            if usuario == 'admin': # Si la condición es verdadera se crea una instancia de la clase MenuAdmin
+                menu = MenuAdmin()  
+                menu.mostrar_menu() # Llama al método mostrar_menu de la instancia menu creada
             else:
-                usuario_id = Controlador.obtener_id_usuario(usuario)
-                menu = MenuUsuario(usuario_id)
-                menu.mostrar_menu()
+                usuario_id = Controlador.obtener_id_usuario(usuario)  # Cuando la condición no se cumple se obtiene el id del usuario
+                menu = MenuUsuario(usuario_id) 
+                menu.mostrar_menu() # Llama al método
             
         else:
             print("Usuario o contraseña incorrectos. Intente de nuevo.")
