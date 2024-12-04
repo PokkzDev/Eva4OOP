@@ -1,9 +1,9 @@
-# RE TAL VEZ PARA VALIDACIONES DE CAMPOS DE TEXTO
-import re
-from modelo import UsuarioModelo
-from modelo import DestinoModelo
-from modelo import PaqueteTuristicoModelo
-from modelo import ReservasModelo
+# Separalo en archivos correspondientes de cada clase este archivo en archivos distintos.
+
+from models.modelo import UsuarioModelo
+from models.modelo import DestinoModelo
+from models.modelo import PaqueteTuristicoModelo
+from models.modelo import ReservasModelo
 
 class Controlador:
     @staticmethod
