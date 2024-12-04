@@ -4,80 +4,14 @@ import mysql.connector
 import prettytable as pt
 
 
+<<<<<<< HEAD:modelo.py
 class UsuarioModelo:
     def __init__(self):
         self.db = DBConn()
         
+=======
+>>>>>>> 9d69efd1bd7a38d52b90220cf6d21234d01379f5:models/modelo.py
 
-    def verificar_usuario(self, usuario, contrasena):
-        try:
-            sql = "SELECT * FROM Usuarios WHERE username = %s"
-            params = (usuario,)
-            user = self.db.query(sql, params)
-            if not user:
-                return False
-            else:
-                user = user[0]
-                stored_password = user[2]
-                if bcrypt.checkpw(contrasena.encode('utf-8'), stored_password.encode('utf-8')):
-                    return user[1], user[3]
-                else:
-                    return False
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
-            return False
-
-    def registrar_usuario(self, usuario, contrasena):
-        try:
-            sql = "SELECT * FROM Usuarios WHERE username = %s"
-            params = (usuario,)
-            if self.db.query(sql, params):
-                return False
-            hashed = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            sql = "INSERT INTO Usuarios (username, password, rol) VALUES (%s, %s, %s)"
-            params = (usuario, hashed, 'cliente')
-            self.db.execute(sql, params)
-            return True
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
-            return False
-    
-    def agregar_datos_personales(self, usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono):
-        try:
-            sql = "INSERT INTO usuario_datos_personales (usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono) VALUES (%s, %s, %s, %s, %s, %s)"
-            params = (usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono)
-            self.db.execute(sql, params)
-            # change hasDatosPersonales flag
-            sql = "UPDATE Usuarios SET hasDatosPersonales = 1 WHERE id = %s"
-            params = (usuario_id,)
-            self.db.execute(sql, params)
-            return True
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
-            return False
-
-    def obtener_id_usuario(self, usuario):
-        try:
-            sql = "SELECT id FROM Usuarios WHERE username = %s"
-            params = (usuario,)
-            result = self.db.query(sql, params)
-            return result[0][0] if result else None
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
-            return None
-
-    def obtener_usuario_por_id(self, usuario_id):
-        try:
-            sql = "SELECT * FROM Usuarios WHERE id = %s"
-            params = (usuario_id,)
-            result = self.db.query(sql, params)
-            return result[0] if result else None
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
-            return None
-
-    def cerrar_conexion(self):
-        self.db.cerrar_conexion()
 
 class Destino:
     def __init__(self, nombre, pais, descripcion):
@@ -233,8 +167,13 @@ class PaqueteTuristicoModelo:
 
     def eliminar_destinos_de_paquete(self, paquete_id):
         try:
-            sql = "DELETE FROM PaqueteDestino WHERE paquete_id = %s"
+            sql = "SELECT paquete_id FROM PaqueteDestino WHERE paquete_id =%s"
             params = (paquete_id,)
+            resultado = self.db.query(sql, params)
+            if resultado == []:
+                print("No existe el paquete turistico seleccionado...")
+                return False
+            sql = "DELETE FROM PaqueteDestino WHERE paquete_id = %s"
             self.db.execute(sql, params)
             return True
         except mysql.connector.Error as err:

@@ -1,9 +1,9 @@
-# RE TAL VEZ PARA VALIDACIONES DE CAMPOS DE TEXTO
-import re
-from modelo import UsuarioModelo
-from modelo import DestinoModelo
-from modelo import PaqueteTuristicoModelo
-from modelo import ReservasModelo
+# Separalo en archivos correspondientes de cada clase este archivo en archivos distintos.
+
+from models.modelo import UsuarioModelo
+from models.modelo import DestinoModelo
+from models.modelo import PaqueteTuristicoModelo
+from models.modelo import ReservasModelo
 
 class Controlador:
     @staticmethod
@@ -17,6 +17,8 @@ class Controlador:
     def registrarse(usuario, contrasena):
         usuario_modelo = UsuarioModelo()
         resultado = usuario_modelo.registrar_usuario(usuario, contrasena)
+        if resultado == False:
+            print("Ya existe ese nombre de usuario")
         usuario_modelo.cerrar_conexion()
         return resultado
 
@@ -99,7 +101,9 @@ class ControladorPaqueteTuristico:
         return True
 
     def eliminar_paquete_turistico(self, id_paquete_turistico):
-        self.paquete_modelo.eliminar_destinos_de_paquete(id_paquete_turistico)
+        resultado = self.paquete_modelo.eliminar_destinos_de_paquete(id_paquete_turistico)
+        if resultado == False:
+            return False
         return self.paquete_modelo.eliminar_paquete_turistico(id_paquete_turistico)
 
     def obtener_paquete_turistico(self, id_paquete_turistico):

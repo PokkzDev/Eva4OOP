@@ -1,7 +1,7 @@
 import bcrypt
 import pwinput
 import os
-from db_conn import DBConn
+from baseDeDatos.db_conn import DBConn
 
 class AdministracionUsuarios:
     def __init__(self):
@@ -34,6 +34,7 @@ class AdministracionUsuarios:
         ''', (nombre, hashed_password, rol))
 
         print("Usuario creado exitosamente.")
+        
 
     def menu(self):
         while True:

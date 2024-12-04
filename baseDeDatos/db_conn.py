@@ -16,13 +16,17 @@ class DBConn:
         self.cursor = self.db.cursor()
 
     def query(self, sql, params=None):
-        self.cursor.execute(sql, params)
-        return self.cursor.fetchall()
-    
+        try:
+            self.cursor.execute(sql, params)
+            return self.cursor.fetchall()
+        except mysql.connector.Error as err:
+            print(f"Error al ejecutar la consulta: {err}")
     def execute(self, sql, params=None):
+        # Usamos un nuevo cursor solo cuando es necesario (por ejemplo, en operaciones de escritura)
         cursor = self.db.cursor()
         cursor.execute(sql, params)
         self.db.commit()
+        cursor.close()  # Cerramos el cursor después de la ejecución
         return cursor
     
     def cerrar_conexion(self):

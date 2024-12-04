@@ -1,3 +1,4 @@
+# Vista
 # MenuPrincipal
 ## Methods:
 - __init__(self)
@@ -28,7 +29,8 @@
 - buscar_paquetes_por_rango_fechas(self)
 - cancelar_reserva(self)
 
-# Controlador
+#Controlador
+# ControladorInicioSesion
 ## Methods:
 - iniciar_sesion(usuario, contrasena)
   - Parameters: usuario (str), contrasena (str)
@@ -91,6 +93,7 @@
   - Parameters: usuario_id (int)
 - cerrar_conexion(self)
 
+#Modelo
 # UsuarioModelo
 ## Methods:
 - __init__(self)

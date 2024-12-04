@@ -24,24 +24,22 @@
   - Eliminar Paquete Turistico
 
 ## Relationships:
-- Usuario -> Iniciar Sesion
-- Usuario -> Registrarse
-- Usuario -> Ver Paquetes Turisticos Disponibles
-- Usuario -> Buscar Paquetes por Rango de Fechas
-- Usuario -> Reservar Paquete Turistico
-- Usuario -> Ver Reservas
-- Usuario -> Cancelar Reserva
-- Administrador -> Iniciar Sesion
-- Administrador -> Menu Destinos Turisticos
-  - Menu Destinos Turisticos -> Ver Destinos Turisticos
-  - Menu Destinos Turisticos -> Agregar Destino Turistico
-  - Menu Destinos Turisticos -> Modificar Destino Turistico
-  - Menu Destinos Turisticos -> Eliminar Destino Turistico
-- Administrador -> Menu Paquetes Turisticos
-  - Menu Paquetes Turisticos -> Ver Paquetes Turisticos
-  - Menu Paquetes Turisticos -> Agregar Paquete Turistico
-  - Menu Paquetes Turisticos -> Modificar Paquete Turistico
-  - Menu Paquetes Turisticos -> Eliminar Paquete Turistico
+- Usuario -> Iniciar Sesion -Include-> Autenticar Usuario
+- Usuario -> Registrar Usuario -Include -> Comprobar Usuario no existe
+- Usuario -> Ver Paquetes Turisticos Disponibles <-Extend- Buscar Paquetes por Rango de Fechas
+- Iniciar Sesion <-Include- Reservar Paquete Turistico <-Extend- Ver Reservas <-Extend- Cancelar Reservas
+
+- Administrador -> Iniciar Sesion -Include-> Autenticar Usuario
+- Iniciar Sesion <-Include- Administrar Destinos Turisticos
+  - Administrar Destinos Turisticos <-Extend- Ver Destinos Turisticos
+  - Administrar Destinos Turisticos <-Extend- Agregar Destino Turistico
+  - Administrar Destinos Turisticos <-Extend- Modificar Destino Turistico
+  - Administrar Destinos Turisticos <-Extend- Eliminar Destino Turistico
+- Iniciar Sesion <-Include- Administrar Paquetes Turisticos
+  - Administrar Paquetes Turisticos <-Extend- Ver Paquetes Turisticos
+  - Administrar Paquetes Turisticos <-Extend- Agregar Paquete Turistico
+  - Administrar Paquetes Turisticos <-Extend- Modificar Paquete Turistico
+  - Administrar Paquetes Turisticos <-Extend- Eliminar Paquete Turistico
 
 # Interactions
 

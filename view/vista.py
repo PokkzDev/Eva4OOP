@@ -1,19 +1,20 @@
-from utilidades.utilidades import Utilidades #Importación de carpeta utilidades y módulo utilidades
-from controlador import Controlador #Importación de módulos
-import prettytable as pt # Para crear tablas
-from controlador import ControladorDestino, ControladorPaqueteTuristico, ControladorReserva
-from modelo import UsuarioModelo  # Importación de módulos
-from datetime import datetime # Biblioteca para trabajar con fechas y horas
-import pwinput # Biblioteca para ocultar contraseñas
+from utilidades.utilidades import Utilidades
+from Controller.controlador import Controlador
+import prettytable as pt
+from Controller.controlador import ControladorDestino, ControladorPaqueteTuristico, ControladorReserva
+from models.modelo import UsuarioModelo  # Add this import
+from datetime import datetime
+import pwinput
+import time
 
-class MenuPrincipal: 
-    def __init__(self): # Constructor, inicializa la clase MenuPrincipal
-        pass # No ejecuta ninguna operación
+class MenuPrincipal:
+    def __init__(self):
+        pass
 
-    def menu(self): 
+    def menu(self):
         while True:
-            Utilidades.limpiar_pantalla()  # Limpiador de pantalla al momento de mostrar nuevamente el menu
-            print("--- Menu Principal ---\n")
+            Utilidades.limpiar_pantalla()
+            print("--- Menu Inicio de Sesión ---\n")
             print("1. Iniciar Sesion")
             print("2. Registrarse")
             print("S. Salir")
@@ -21,31 +22,38 @@ class MenuPrincipal:
 
             if opcion == '1':
                 self.iniciar_sesion()
+                time.sleep(0.75)
             elif opcion == '2':
-                self.registrarse()
+                usuario = input("ingrese usuario: ")
+                cont = pwinput.pwinput("Ingrese contraseña: ", mask="*")
+                Controlador.registrarse(usuario, cont)
+                time.sleep(0.75)
             elif opcion.lower() == 's':
+                print("Hasta pronto!!")
                 break
             else:
                 print("Opción no válida. Intente de nuevo.")
+                time.sleep(0.75)
 
     def iniciar_sesion(self):
         Utilidades.limpiar_pantalla()
-        usuario = input("Ingrese su usuario: ") # Entrada del nombre del usuario
-        contrasena = pwinput.pwinput("Ingrese su contraseña: ", mask='*') # Entrada de la contraseña del usuario ocultada con *
-        if Controlador.iniciar_sesion(usuario, contrasena): # verificación, cuando la condición es verdadera se muestra el mensaje "Inicio de sesión exitoso"
+        usuario = input("Ingrese su usuario: ")
+        contrasena = pwinput.pwinput("Ingrese su contraseña: ", mask='*')
+        user = Controlador.iniciar_sesion(usuario, contrasena)
+        if user:
             print("Inicio de sesión exitoso.")
-            Utilidades.pausar() # Pausa la ejecución del programa
-            if usuario == 'admin': # Si la condición es verdadera se crea una instancia de la clase MenuAdmin
-                menu = MenuAdmin()  
-                menu.mostrar_menu() # Llama al método mostrar_menu de la instancia menu creada
+            time.sleep(0.75)
+            if usuario == user[2]:
+                menu = MenuAdmin()
+                menu.mostrar_menu()
             else:
-                usuario_id = Controlador.obtener_id_usuario(usuario)  # Cuando la condición no se cumple se obtiene el id del usuario
-                menu = MenuUsuario(usuario_id) 
-                menu.mostrar_menu() # Llama al método
+                usuario_id = Controlador.obtener_id_usuario(usuario)
+                menu = MenuUsuario(usuario_id)
+                menu.mostrar_menu()
             
         else:
             print("Usuario o contraseña incorrectos. Intente de nuevo.")
-            Utilidades.pausar()
+            time.sleep(0.75)
 
     def registrarse(self):
         Utilidades.limpiar_pantalla()
@@ -73,11 +81,11 @@ class MenuAdmin:
     def mostrar_menu(self):
         while True:
             Utilidades.limpiar_pantalla()
-            print("--- Menu Admin ---\n")
+            print("--- Menu Principal Admin ---\n")
 
             opciones =[
-                "1. Menu Destinos Turisticos",
-                "2. Menu Paquetes Turisticos",
+                "1. Gestionar Destinos Turisticos",
+                "2. Gestionar Paquetes Turisticos",
                 "S. Volver"
             ]
 
@@ -91,10 +99,12 @@ class MenuAdmin:
             elif opcion == '2':
                 self.menu_paquetes()
             elif opcion.lower() == 's':
+                print("Volviendo al inicio de sesión...")
+                time.sleep(0.75)
                 break
             else:
                 print("Opción no válida. Intente de nuevo.")
-                Utilidades.pausar()
+                time.sleep(0.75)
 
     def menu_destinos_turisticos(self):
         controlador_destino = ControladorDestino()
@@ -139,14 +149,14 @@ class MenuAdmin:
 
                 if not nombre or not descripcion or not actividades or not costo:
                     print("Todos los campos son obligatorios. Intente de nuevo.")
-                    Utilidades.pausar()
+                    time.sleep(0.75)
                     continue
 
                 if controlador_destino.crear_destino(nombre, descripcion, actividades, costo):
                     print("Destino agregado exitosamente.")
                 else:
                     print("Error al agregar el destino.")
-                Utilidades.pausar()
+                time.sleep(0.75)
             elif opcion == '3':
                 Utilidades.limpiar_pantalla()
                 print("--- Modificar Destino Turistico ---\n")
@@ -155,7 +165,7 @@ class MenuAdmin:
                 destino = controlador_destino.obtener_destino(id_destino)
                 if not destino:
                     print("Destino no encontrado.")
-                    Utilidades.pausar()
+                    time.sleep(0.75)
                     continue
                 nombre = input(f"Ingrese el nuevo nombre del destino [{destino[1]}]: ") or destino[1]
                 descripcion = input(f"Ingrese la nueva descripción del destino [{destino[2]}]: ") or destino[2]
@@ -165,7 +175,7 @@ class MenuAdmin:
                     print("Destino modificado exitosamente.")
                 else:
                     print("Error al modificar el destino.")
-                Utilidades.pausar()
+                time.sleep(0.75)
             elif opcion == '4':
                 Utilidades.limpiar_pantalla()
                 print("--- Eliminar Destino Turistico ---\n")
@@ -175,12 +185,13 @@ class MenuAdmin:
                     print("Destino eliminado exitosamente.")
                 else:
                     print("Error al eliminar el destino.")
-                Utilidades.pausar()
+                time.sleep(0.75)
             elif opcion.lower() == 's':
+                print("Volviendo al Menu Principal Admin...")
                 break
             else:
                 print("Opción no válida. Intente de nuevo.")
-                Utilidades.pausar()
+                time.sleep(0.75)
         controlador_destino.cerrar_conexion()
     
     def menu_paquetes(self):
@@ -219,22 +230,30 @@ class MenuAdmin:
             elif opcion == '2':
                 Utilidades.limpiar_pantalla()
                 print("--- Agregar Paquete Turistico ---\n")
-                fecha_inicio = input("Ingrese la fecha de inicio (DD-MM-YYYY): ")
-                fecha_fin = input("Ingrese la fecha de fin (DD-MM-YYYY): ")
-                
-                try:
-                    fecha_inicio = datetime.strptime(fecha_inicio, "%d-%m-%Y").strftime("%Y-%m-%d")
-                    fecha_fin = datetime.strptime(fecha_fin, "%d-%m-%Y").strftime("%Y-%m-%d")
-                except ValueError:
-                    print("Formato de fecha inválido.")
-                    Utilidades.pausar()
-                    continue
+                while True:
+                    try:
+                        fecha_inicio = input("Ingrese la fecha de inicio (DD-MM-YYYY): ")
+                        fecha_inicio = datetime.strptime(fecha_inicio, "%d-%m-%Y")
+                        fecha_fin = input("Ingrese la fecha de fin (DD-MM-YYYY): ")
+                        fecha_fin = datetime.strptime(fecha_fin, "%d-%m-%Y")
+                        if fecha_inicio <= datetime.now():
+                            print("La fecha de inicio debe ser posterior a la fecha actual.")
+                            continue
+                        elif fecha_fin <= datetime.now() or fecha_fin <= fecha_inicio:
+                            print("La fecha de fin debe ser posterior a la fecha actual y a la fecha de inicio.")
+                            continue
+                        fecha_inicio = fecha_inicio.strftime("%Y-%m-%d")
+                        fecha_fin = fecha_fin.strftime("%Y-%m-%d")
+                        break
+                    except ValueError:
+                        print("Formato de fecha inválido.")
+                        time.sleep(0.75)
 
                 # Seleccionar destinos
                 destinos = controlador_destino.obtener_destinos()
                 if not destinos:
                     print("No hay destinos disponibles para agregar.")
-                    Utilidades.pausar()
+                    time.sleep(0.75)
                     continue
                 print("Seleccione destinos por ID separados por comas:")
                 for destino in destinos:
@@ -244,14 +263,14 @@ class MenuAdmin:
                     destino_ids = [int(id.strip()) for id in seleccion.split(',')]
                 except ValueError:
                     print("Selección inválida de destinos.")
-                    Utilidades.pausar()
+                    time.sleep(0.75)
                     continue
 
                 if controlador_paquete.crear_paquete_turistico(fecha_inicio, fecha_fin, destino_ids):
                     print("Paquete turistico agregado exitosamente.")
                 else:
                     print("Error al agregar el paquete turistico.")
-                Utilidades.pausar()
+                time.sleep(0.75)
             elif opcion == '3':
                 Utilidades.limpiar_pantalla()
                 print("--- Modificar Paquete Turistico ---\n")
@@ -260,7 +279,7 @@ class MenuAdmin:
                 paquete = controlador_paquete.obtener_paquete_turistico(id_paquete)
                 if not paquete:
                     print("Paquete no encontrado.")
-                    Utilidades.pausar()
+                    time.sleep(0.75)
                     continue
                 fecha_inicio = input(f"Ingrese la nueva fecha de inicio (DD-MM-YYYY) [{paquete[1]}]: ")
                 fecha_fin = input(f"Ingrese la nueva fecha de fin (DD-MM-YYYY) [{paquete[2]}]: ")
@@ -277,14 +296,14 @@ class MenuAdmin:
                         fecha_fin = paquete[2]
                 except ValueError:
                     print("Formato de fecha inválido.")
-                    Utilidades.pausar()
+                    time.sleep(0.75)
                     continue
 
                 # Seleccionar nuevos destinos
                 destinos = controlador_destino.obtener_destinos()
                 if not destinos:
                     print("No hay destinos disponibles para agregar.")
-                    Utilidades.pausar()
+                    time.sleep(0.75)
                     continue
                 print("Seleccione nuevos destinos por ID separados por comas:")
                 for destino in destinos:
@@ -294,7 +313,7 @@ class MenuAdmin:
                     destino_ids = [int(id.strip()) for id in seleccion.split(',')]
                 except ValueError:
                     print("Selección inválida de destinos.")
-                    Utilidades.pausar()
+                    time.sleep(0.75)
                     continue
 
                 precio_total = None  # Will be calculated automatically
@@ -302,7 +321,7 @@ class MenuAdmin:
                     print("Paquete turistico modificado exitosamente.")
                 else:
                     print("Error al modificar el paquete turistico.")
-                Utilidades.pausar()
+                time.sleep(0.75)
             elif opcion == '4':
                 Utilidades.limpiar_pantalla()
                 print("--- Eliminar Paquete Turistico ---\n")
@@ -310,14 +329,16 @@ class MenuAdmin:
                 id_paquete = input("Ingrese el ID del paquete a eliminar: ")
                 if controlador_paquete.eliminar_paquete_turistico(id_paquete):
                     print("Paquete turistico eliminado exitosamente.")
+                    time.sleep(0.75)
                 else:
                     print("Error al eliminar el paquete turistico.")
-                Utilidades.pausar()
+                    time.sleep(2)
             elif opcion.lower() == 's':
+                print("Volviendo al Menu Principal Admin...")
                 break
             else:
                 print("Opción no válida. Intente de nuevo.")
-                Utilidades.pausar()
+                time.sleep(0.75)
         controlador_paquete.cerrar_conexion()
         controlador_destino.cerrar_conexion()
 
@@ -351,6 +372,7 @@ class MenuUsuario:
             elif opcion == '5':  # Add this block
                 self.cancelar_reserva()
             elif opcion.lower() == 's':
+                print("Volviendo al inicio de sesión...")
                 break
             else:
                 print("Opción no válida. Intente de nuevo.")
@@ -484,5 +506,5 @@ class MenuUsuario:
 
 if __name__ == '__main__':
     # bypass and test admin menu
-    menu = MenuAdmin()
-    menu.mostrar_menu()
+    menu = MenuPrincipal()
+    menu.menu()
