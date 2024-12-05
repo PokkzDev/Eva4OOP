@@ -83,7 +83,6 @@ class ControladorPaqueteTuristico:
         precio_total = sum(destino['costo'] for destino in destinos)
         paquete_id = self.paquete_modelo.crear_paquete_turistico(fecha_inicio, fecha_fin, precio_total)
         print(paquete_id)
-        input(2.2)
         if not paquete_id:
             return False
         for destino_id in destino_ids:
@@ -95,7 +94,7 @@ class ControladorPaqueteTuristico:
         destinos = self.destino_modelo.obtener_destinos_por_ids(destino_ids)
         if not destinos:
             return False
-        precio_total = sum(destino[4] for destino in destinos)
+        precio_total = sum(destino['costo'] for destino in destinos)
         if not self.paquete_modelo.actualizar_paquete_turistico(id_paquete_turistico, fecha_inicio, fecha_fin, precio_total):
             return False
         self.paquete_modelo.eliminar_destinos_de_paquete(id_paquete_turistico)

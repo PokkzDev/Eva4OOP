@@ -39,10 +39,8 @@ class PaqueteTuristicoModelo:
             params = (fecha_inicio, fecha_fin, precio_total)
             
             # Ejecuta la inserción, pero no necesitas el lastrowid
-            resultado =self.db.execute(sql, params)
-            print(resultado)
-            input(2.01)
-            return True  # Indica que la inserción fue exitosa
+            resultado =self.db.execute_id(sql, params)
+            return resultado  # Indica que la inserción fue exitosa
         except mysql.connector.Error as err:
             print(f"Error al crear paquete turístico: {err}")
             return False
@@ -75,10 +73,8 @@ class PaqueteTuristicoModelo:
         try:
             sql = "INSERT INTO PaqueteDestino (paquete_id, destino_id) VALUES (%s, %s)"
             params = (paquete_id, destino_id)
-            resultado = self.db.execute(sql, params)
-            print(resultado)
-            input(2.11)
-            return resultado['id']
+            self.db.execute(sql, params)
+            return True
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             return False

@@ -203,7 +203,6 @@ class MenuAdmin:
                     print("Paquete turistico agregado exitosamente.")
                 else:
                     print("Error al agregar el paquete turistico.")
-                    input(2)
                 time.sleep(0.75)
 
             elif opcion == '3':
@@ -216,19 +215,19 @@ class MenuAdmin:
                     print("Paquete no encontrado.")
                     time.sleep(0.75)
                     continue
-                fecha_inicio = input(f"Ingrese la nueva fecha de inicio (DD-MM-YYYY) [{paquete[1]}]: ")
-                fecha_fin = input(f"Ingrese la nueva fecha de fin (DD-MM-YYYY) [{paquete[2]}]: ")
+                fecha_inicio = input(f"Ingrese la nueva fecha de inicio (DD-MM-YYYY) [{paquete['fecha_inicio']}]: ")
+                fecha_fin = input(f"Ingrese la nueva fecha de fin (DD-MM-YYYY) [{paquete['fecha_fin']}]: ")
                 
                 try:
                     if fecha_inicio:
                         fecha_inicio = datetime.strptime(fecha_inicio, "%d-%m-%Y").strftime("%Y-%m-%d")
                     else:
-                        fecha_inicio = paquete[1]
+                        fecha_inicio = paquete['fecha_inicio']
                     
                     if fecha_fin:
                         fecha_fin = datetime.strptime(fecha_fin, "%d-%m-%Y").strftime("%Y-%m-%d")
                     else:
-                        fecha_fin = paquete[2]
+                        fecha_fin = paquete['fecha_fin']
                 except ValueError:
                     print("Formato de fecha inválido.")
                     time.sleep(0.75)
@@ -242,7 +241,7 @@ class MenuAdmin:
                     continue
                 print("Seleccione nuevos destinos por ID separados por comas:")
                 for destino in destinos:
-                    print(f"{destino[0]}. {destino[1]} - {destino[4]}")
+                    print(f"{destino.id}. {destino.nombre} - {destino.costo}")
                 seleccion = input("Ingrese los IDs de los destinos: ")
                 try:
                     destino_ids = [int(id.strip()) for id in seleccion.split(',')]

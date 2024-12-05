@@ -33,6 +33,16 @@ class DBConn:
         cursor.execute(sql, params or ())
         self.connection.commit()
 
+    def execute_id(self, sql, params=None):
+        cursor = self.connection.cursor()
+        cursor.execute(sql, params or ())
+        self.connection.commit()
+        
+        # Devuelve el ID de la última fila insertada
+        last_row_id = cursor.lastrowid
+        cursor.close()
+        return last_row_id  # Esto es lo que devuelve el método execute
+
     def cerrar_conexion(self):
         if self.connection:
             self.connection.close()
