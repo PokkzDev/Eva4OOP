@@ -1,6 +1,6 @@
 from utilidades.utilidades import Utilidades
 import prettytable as pt
-from Controller.controlador import ControladorDestino, ControladorPaqueteTuristico, ControladorReserva
+from Controller.controlador import ControladorDestino, ControladorPaqueteTuristico, ControladorAdmin
 from datetime import datetime
 import time
 
@@ -18,6 +18,7 @@ class MenuAdmin:
             opciones =[
                 "1. Gestionar Destinos Turisticos",
                 "2. Gestionar Paquetes Turisticos",
+                "3. Agregar nuevo usuario",
                 "S. Volver"
             ]
 
@@ -30,6 +31,8 @@ class MenuAdmin:
                 self.menu_destinos_turisticos()
             elif opcion == '2':
                 self.menu_paquetes()
+            elif opcion == '3':
+                self.creacion_usuario()
             elif opcion.lower() == 's':
                 print("Volviendo al inicio de sesión...")
                 time.sleep(0.75)
@@ -275,3 +278,7 @@ class MenuAdmin:
                 time.sleep(0.75)
         controlador_paquete.cerrar_conexion()
         controlador_destino.cerrar_conexion()
+
+    def creacion_usuario(self):
+        controlador_usuario= ControladorAdmin()
+        controlador_usuario.crear_usuario()

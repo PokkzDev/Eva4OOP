@@ -9,7 +9,7 @@ class MenuPrincipal:
     def __init__(self):
         pass
 
-    def menu(self):
+    def mostrar_menu(self):
         while True:
             Utilidades.limpiar_pantalla()
             print("--- Menu Inicio de Sesión ---\n")
@@ -35,19 +35,22 @@ class MenuPrincipal:
 
     def iniciar_sesion(self):
         Utilidades.limpiar_pantalla()
-        usuario = input("Ingrese su usuario: ")
-        contrasena = pwinput.pwinput("Ingrese su contraseña: ", mask='*')
+        usuario = 'cliente'#input("Ingrese su usuario: ")
+        contrasena = '123'#pwinput.pwinput("Ingrese su contraseña: ", mask='*')
         user = Controlador.iniciar_sesion(usuario, contrasena)
         if user:
             print("Inicio de sesión exitoso.")
             time.sleep(0.75)
-            if user.username == usuario:
+            if user.get_rol() == 'admin':
                 menu = MenuAdmin()
                 menu.mostrar_menu()
-            else:
+            elif user.get_rol() == 'cliente':
                 usuario_id = Controlador.obtener_id_usuario(usuario)
                 menu = MenuUsuario(usuario_id)
                 menu.mostrar_menu()
+            else:
+                print("Rol desconocido. No se puede acceder al sistema.")
+            time.sleep(1)
             
         else:
             print("Usuario o contraseña incorrectos. Intente de nuevo.")

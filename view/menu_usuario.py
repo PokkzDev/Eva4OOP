@@ -1,7 +1,7 @@
 from utilidades.utilidades import Utilidades
 import prettytable as pt
 from Controller.controlador import Controlador
-from Controller.controlador import ControladorDestino, ControladorPaqueteTuristico, ControladorReserva
+from Controller.controlador import ControladorPaqueteTuristico, ControladorReserva
 from models.usuario import UsuarioModelo
 from datetime import datetime
 import time
@@ -45,8 +45,43 @@ class MenuUsuario:
         paquetes = controlador_paquete.obtener_paquetes_turisticos()
         table = pt.PrettyTable()
         table.field_names = ["ID", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos"]
+        # Asegúrate de agregar solo los valores correctos a la tabla
         for paquete in paquetes:
-            table.add_row(paquete)
+            # Extraemos los valores del diccionario
+            table.add_row([paquete['id'], paquete['fecha_inicio'], paquete['fecha_fin'], paquete['precio_total'], paquete['destinos']])
+        print(table)
+        Utilidades.pausar()
+        controlador_paquete.cerrar_conexion()
+
+    def buscar_paquetes_por_rango_fechas(self):  # Add this method
+        controlador_paquete = ControladorPaqueteTuristico()
+        # Convertir las fechas del formato 'DD-MM-YYYY' a 'YYYY-MM-DD'
+        while True:
+            try:
+                # Solicitar la fecha de inicio
+                fecha_inicio = input("Ingrese la fecha de inicio (DD-MM-YYYY): ")
+                # Intentar convertir la fecha al formato adecuado
+                fecha_inicio = datetime.strptime(fecha_inicio, "%d-%m-%Y").strftime("%Y-%m-%d")
+                break  # Si la conversión es exitosa, salir del bucle
+            except ValueError:
+                print("El formato de la fecha de inicio es incorrecto. Por favor, ingrese la fecha en formato DD-MM-YYYY.")
+
+        while True:
+            try:
+                # Solicitar la fecha de fin
+                fecha_fin = input("Ingrese la fecha de fin (DD-MM-YYYY): ")
+                # Intentar convertir la fecha al formato adecuado
+                fecha_fin = datetime.strptime(fecha_fin, "%d-%m-%Y").strftime("%Y-%m-%d")
+                break  # Si la conversión es exitosa, salir del bucle
+            except ValueError:
+                print("El formato de la fecha de fin es incorrecto. Por favor, ingrese la fecha en formato DD-MM-YYYY.")
+        paquetes = controlador_paquete.buscar_paquete_turistico_por_rango_fechas(fecha_inicio, fecha_fin)
+        table = pt.PrettyTable()
+        table.field_names = ["ID", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos", "Actividades"]
+        # Asegúrate de agregar solo los valores correctos a la tabla
+        for paquete in paquetes:
+            # Extraemos los valores del diccionario
+            table.add_row([paquete['id'], paquete['fecha_inicio'], paquete['fecha_fin'], paquete['precio_total'], paquete['destinos'], paquete['actividades']])
         print(table)
         Utilidades.pausar()
         controlador_paquete.cerrar_conexion()
@@ -54,12 +89,20 @@ class MenuUsuario:
     def reservar_paquete_turistico(self):
         controlador_usuario = Controlador()
         usuario_modelo = UsuarioModelo()
-        usuario = usuario_modelo.obtener_usuario_por_id(self.usuario_id)
-        if not usuario[3]: 
+        usuario = controlador_usuario.obtener_usuario_por_id(self.usuario_id)
+        if not usuario.get_hasDatosPersonales(): 
             print("Debe completar sus datos personales antes de realizar una reserva.")
             nombre = input("Ingrese su nombre: ")
             apellido = input("Ingrese su apellido: ")
-            fecha_nacimiento = input("Ingrese su fecha de nacimiento (YYYY-MM-DD): ")
+            while True:
+                try:
+                    # Solicitar la fecha de fin
+                    fecha_nacimiento = input("Ingrese su fecha de nacimiento (DD-MM-YYYY): ")
+                    # Intentar convertir la fecha al formato adecuado
+                    fecha_nacimiento = datetime.strptime(fecha_nacimiento, "%d-%m-%Y").strftime("%Y-%m-%d")
+                    break  # Si la conversión es exitosa, salir del bucle
+                except ValueError:
+                    print("El formato de la fecha de nacimiento es incorrecto. Por favor, ingrese la fecha en formato DD-MM-YYYY.")
             direccion = input("Ingrese su dirección: ")
             telefono = input("Ingrese su teléfono: ")
             if controlador_usuario.agregar_datos_personales(self.usuario_id, nombre, apellido, fecha_nacimiento, direccion, telefono):
@@ -68,7 +111,6 @@ class MenuUsuario:
                 print("Error al agregar los datos personales.")
                 Utilidades.pausar()
                 return
-        usuario_modelo.cerrar_conexion()
 
         controlador_paquete = ControladorPaqueteTuristico()
         controlador_reserva = ControladorReserva()
@@ -76,7 +118,7 @@ class MenuUsuario:
         table = pt.PrettyTable()
         table.field_names = ["ID", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos"]
         for paquete in paquetes:
-            table.add_row(paquete)
+            table.add_row([paquete['id'], paquete['fecha_inicio'], paquete['fecha_fin'], paquete['precio_total'], paquete['destinos']])
         print(table)
         id_paquete = input("Ingrese el ID del paquete a reservar: ")
 
@@ -111,44 +153,33 @@ class MenuUsuario:
         table = pt.PrettyTable()
         table.field_names = ["ID Reserva", "Fecha Reserva", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos", "Actividades"]
         for reserva in reservas:
-            paquete_id = reserva[2]
+            paquete_id = reserva['id']
             controlador_paquete = ControladorPaqueteTuristico()
             paquete = controlador_paquete.obtener_paquete_turistico(paquete_id)
             destinos = controlador_paquete.obtener_destinos_de_paquete(paquete_id)
-            destinos_str = ",\n".join([destino[1] for destino in destinos])
-            actividades_str = ",\n".join([destino[3] for destino in destinos])
-            table.add_row([reserva[0], reserva[3], paquete[1], paquete[2], paquete[3], destinos_str, actividades_str])
+            destinos_str = ",\n".join([destino['nombre'] for destino in destinos])
+            actividades_str = ",\n".join([destino['actividades'] for destino in destinos])
+            table.add_row([reserva['id'], reserva['fecha_fin'], paquete['fecha_inicio'], paquete['fecha_fin'], paquete['precio_total'], destinos_str, actividades_str])
             controlador_paquete.cerrar_conexion()
         print(table)
         Utilidades.pausar()
         controlador_reserva.cerrar_conexion()
 
-    def buscar_paquetes_por_rango_fechas(self):  # Add this method
-        controlador_paquete = ControladorPaqueteTuristico()
-        fecha_inicio = input("Ingrese la fecha de inicio (YYYY-MM-DD): ")
-        fecha_fin = input("Ingrese la fecha de fin (YYYY-MM-DD): ")
-        paquetes = controlador_paquete.buscar_paquete_turistico_por_rango_fechas(fecha_inicio, fecha_fin)
-        table = pt.PrettyTable()
-        table.field_names = ["ID", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos", "Actividades"]
-        for paquete in paquetes:
-            table.add_row(paquete)
-        print(table)
-        Utilidades.pausar()
-        controlador_paquete.cerrar_conexion()
+
 
     def cancelar_reserva(self):  # Add this method
         controlador_reserva = ControladorReserva()
-        reservas = controlador_reserva.obtener_reservas_por_usuario(self.usuario_id)
+        reservas = controlador_reserva.obtener_reservas_por_usuario(self.usuario_id)    
         table = pt.PrettyTable()
         table.field_names = ["ID Reserva", "Fecha Reserva", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos", "Actividades"]
         for reserva in reservas:
-            paquete_id = reserva[2]
+            paquete_id = reserva['id']
             controlador_paquete = ControladorPaqueteTuristico()
             paquete = controlador_paquete.obtener_paquete_turistico(paquete_id)
             destinos = controlador_paquete.obtener_destinos_de_paquete(paquete_id)
-            destinos_str = ",\n".join([destino[1] for destino in destinos])
-            actividades_str = ",\n".join([destino[3] for destino in destinos])
-            table.add_row([reserva[0], reserva[3], paquete[1], paquete[2], paquete[3], destinos_str, actividades_str])
+            destinos_str = ",\n".join([destino['nombre'] for destino in destinos])
+            actividades_str = ",\n".join([destino['actividades'] for destino in destinos])
+            table.add_row([reserva['id'], reserva['fecha_reserva'], paquete['fecha_inicio'], paquete['fecha_fin'], paquete['precio_total'], destinos_str, actividades_str])
             controlador_paquete.cerrar_conexion()
         print(table)
         id_reserva = input("Ingrese el ID de la reserva a cancelar: ")

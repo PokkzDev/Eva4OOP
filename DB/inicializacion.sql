@@ -75,8 +75,8 @@ INSERT INTO Destinos (nombre, descripciones, actividades, costo) VALUES
 
 -- Insert mock data for Paquetes Turísticos
 INSERT INTO PaquetesTuristicos (fecha_inicio, fecha_fin, precio_total) VALUES
-('2024-06-01', '2024-06-10', 5000.0),
-('2024-07-15', '2024-07-25', 7500.0);
+('2025-01-01', '2025-01-10', 5000.0),
+('2025-01-20', '2025-01-31', 7500.0);
 
 -- Insert mock data for PaqueteDestino
 INSERT INTO PaqueteDestino (paquete_id, destino_id) VALUES

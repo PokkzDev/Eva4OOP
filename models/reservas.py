@@ -1,6 +1,6 @@
 # reservas_modelo.py
 import mysql.connector
-from baseDeDatos.db_conn import DBConn
+from .db_conn import DBConn
 
 
 class Reserva:
@@ -14,7 +14,7 @@ class ReservasModelo:
     def __init__(self):
         self.db = DBConn()
 
-    def obtener_reservas(self):
+    def obtener_reservas(self, id_user):
         sql = """
         SELECT r.id, u.username, p.fecha_inicio, p.fecha_fin, r.fecha_reserva
         FROM Reservas r

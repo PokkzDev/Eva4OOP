@@ -1,7 +1,7 @@
 # usuario_modelo.py
 import bcrypt
 import mysql.connector
-from baseDeDatos.db_conn import DBConn
+from .db_conn import DBConn
 
 class Usuario:
     def __init__(self, id=None, username=None, password=None, rol=None, hasDatosPersonales=False):
@@ -24,6 +24,10 @@ class Usuario:
     def get_rol(self):
         """Retorna el rol del usuario."""
         return self.__rol
+
+    def get_hasDatosPersonales(self):
+        """Retorna el rol del usuario."""
+        return self.__hasDatosPersonales
 
     def __str__(self):
         return f"Usuario(id={self.id}, username={self.username}, rol={self.__rol}, hasDatosPersonales={self.__hasDatosPersonales})"
@@ -91,7 +95,7 @@ class UsuarioModelo:
                 return None
             
             user_data = result[0]
-            user = Usuario(id=user_data[0], username=user_data[1], password=user_data[2], rol=user_data[3], hasDatosPersonales=user_data[4],)
+            user = Usuario(id=user_data['id'], username=user_data['username'], password=user_data['password'], rol=user_data['rol'], hasDatosPersonales=user_data['hasDatosPersonales'],)
             return user if user.verificar_usuario(username, contrasena) else None
         except mysql.connector.Error as err:
             print(f"Error: {err}")
@@ -140,7 +144,7 @@ class UsuarioModelo:
             sql = "SELECT id FROM Usuarios WHERE username = %s"
             params = (usuario,)
             result = self.db.query(sql, params)
-            return result[0][0] if result else None
+            return result[0]['id'] if result else None
         except mysql.connector.Error as err:
             print(f"Error: {err}")
             return None
@@ -153,7 +157,7 @@ class UsuarioModelo:
             result = self.db.query(sql, params)
             if result:
                 user_data = result[0]
-                return Usuario(id=user_data[0], username=user_data[1], password=user_data[2], rol=user_data[3], hasDatosPersonales=user_data[4])
+                return Usuario(id=user_data['id'], username=user_data['username'], password=user_data['password'], rol=user_data['rol'], hasDatosPersonales=user_data['hasDatosPersonales'])
             return None
         except mysql.connector.Error as err:
             print(f"Error: {err}")

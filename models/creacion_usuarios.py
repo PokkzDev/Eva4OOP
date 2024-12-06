@@ -1,7 +1,7 @@
 import bcrypt
 import pwinput
 import os
-from baseDeDatos.db_conn import DBConn
+from .db_conn import DBConn
 
 class AdministracionUsuarios:
     def __init__(self):
@@ -24,7 +24,7 @@ class AdministracionUsuarios:
 
         print("Creando usuario...")
         print("Nombre:", nombre)
-        print("Contraseña:", contrasena)
+        print("Contraseña: No Disponible para visibilizar")
         print("Rol:", rol)
 
         input("Presione Enter para continuar...")

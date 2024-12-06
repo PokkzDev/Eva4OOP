@@ -4,6 +4,7 @@ from models.usuario import UsuarioModelo
 from models.destino import DestinoModelo
 from models.paquete_turistico import PaqueteTuristicoModelo
 from models.reservas import ReservasModelo
+from models.creacion_usuarios import AdministracionUsuarios
 
 class Controlador:
     @staticmethod
@@ -145,7 +146,14 @@ class ControladorReserva:
         return self.reserva_modelo.cancelar_reserva(id_reserva)
 
     def obtener_reservas_por_usuario(self, usuario_id):
-        return self.reserva_modelo.obtener_reservas_por_usuario(usuario_id)
+        return self.reserva_modelo.obtener_reservas(usuario_id)
 
     def cerrar_conexion(self):
         self.reserva_modelo.cerrar_conexion()
+
+class ControladorAdmin:
+    def __init__(self):
+        self.Administracion = AdministracionUsuarios()
+
+    def crear_usuario(self):
+        return self.Administracion.create_user()
