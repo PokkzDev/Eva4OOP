@@ -1,5 +1,5 @@
 # Importa la clase ReservasModelo desde el módulo models.modelo
-from models.modelo import ReservasModelo
+from models.reservas import ReservasModelo
 
 # Define la clase ControladorReserva, que actúa como intermediario entre la vista y el modelo de datos
 class ControladorReserva:

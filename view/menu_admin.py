@@ -255,7 +255,7 @@ class MenuAdmin:
                     time.sleep(0.75)
                     continue
 
-                precio_total = None  # Will be calculated automatically
+                precio_total = None  # Será calculado automáticamente
                 if controlador_paquete.actualizar_paquete_turistico(id_paquete, fecha_inicio, fecha_fin, destino_ids):
                     print("Paquete turistico modificado exitosamente.")
                 else:

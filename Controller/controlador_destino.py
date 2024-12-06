@@ -1,5 +1,5 @@
 # Importa la clase DestinoModelo desde el módulo models.modelo
-from models.modelo import DestinoModelo
+from models.destino import DestinoModelo
 
 # Define la clase ControladorDestino, que actúa como intermediario entre la vista y el modelo de datos
 class ControladorDestino:

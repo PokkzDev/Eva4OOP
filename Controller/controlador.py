@@ -1,5 +1,5 @@
 # Importa la clase UsuarioModelo desde el módulo models.modelo
-from models.modelo import UsuarioModelo
+from models.usuario import UsuarioModelo
 
 # Define la clase Controlador, que maneja las operaciones relacionadas con usuarios
 class Controlador:

@@ -1,6 +1,6 @@
 # Importa las clases DestinoModelo y PaqueteTuristicoModelo desde el módulo models.modelo
-from models.modelo import DestinoModelo
-from models.modelo import PaqueteTuristicoModelo
+from models.destino import DestinoModelo
+from models.paquete_turistico import PaqueteTuristicoModelo
 
 
 # Define la clase ControladorPaqueteTuristico, que actúa como intermediario entre la vista y el modelo de datos

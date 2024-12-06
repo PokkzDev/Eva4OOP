@@ -3,9 +3,8 @@ import prettytable as pt
 from Controller.controlador import Controlador
 from Controller.controlador_paquete_turistico import ControladorPaqueteTuristico
 from Controller.controlador_reserva import ControladorReserva
-from models.usuario import UsuarioModelo
 from datetime import datetime
-import time
+
 
 
 class MenuUsuario:
