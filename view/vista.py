@@ -2,7 +2,7 @@ from utilidades.utilidades import Utilidades
 from Controller.controlador import Controlador
 from Controller.controlador import Controlador
 import prettytable as pt
-from Controller.controlador_model import ControladorDestino, ControladorPaqueteTuristico, ControladorReserva
+from Controller.controlador import ControladorDestino, ControladorPaqueteTuristico, ControladorReserva
 from models.modelo import UsuarioModelo  # Add this import
 from datetime import datetime
 import pwinput

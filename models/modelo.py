@@ -4,12 +4,6 @@ import mysql.connector
 import prettytable as pt
 
 
-class UsuarioModelo:
-    def __init__(self):
-        self.db = DBConn()
-        
-=======
->>>>>>> 9d69efd1bd7a38d52b90220cf6d21234d01379f5:models/modelo.py
 
 
 class Destino:
