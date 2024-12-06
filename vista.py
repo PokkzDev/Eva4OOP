@@ -1,7 +1,7 @@
 from utilidades.utilidades import Utilidades #Importación de carpeta utilidades y módulo utilidades
-from Controller.controlador import Controlador #Importación de módulos
+from Controller.controlador_model import Controlador #Importación de módulos
 import prettytable as pt # Para crear tablas
-from Controller.controlador import ControladorDestino, ControladorPaqueteTuristico, ControladorReserva
+from Controller.controlador_model import ControladorDestino, ControladorPaqueteTuristico, ControladorReserva
 from models.modelo import UsuarioModelo  # Importación de módulos
 from datetime import datetime # Biblioteca para trabajar con fechas y horas
 import pwinput # Biblioteca para ocultar contraseñas
