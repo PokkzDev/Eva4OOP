@@ -1,8 +1,10 @@
 from utilidades.utilidades import Utilidades
-from Controller.controlador_model import Controlador
+from Controller.controlador import Controlador
 import prettytable as pt
-from Controller.controlador_model import ControladorDestino, ControladorPaqueteTuristico, ControladorReserva
-from models.modelo import UsuarioModelo  # Add this import
+from Controller.controlador_destino import ControladorDestino
+from Controller.controlador_paquete_turistico import ControladorPaqueteTuristico
+from Controller.controlador_reserva import ControladorReserva
+from models.modelo import UsuarioModelo  #Agregación de Módulos
 from datetime import datetime
 import pwinput
 import time
