@@ -35,8 +35,8 @@ class MenuPrincipal:
 
     def iniciar_sesion(self):
         Utilidades.limpiar_pantalla()
-        usuario = 'cliente'#input("Ingrese su usuario: ")
-        contrasena = '123'#pwinput.pwinput("Ingrese su contraseña: ", mask='*')
+        usuario = input("Ingrese su usuario: ")
+        contrasena = pwinput.pwinput("Ingrese su contraseña: ", mask='*')
         user = Controlador.iniciar_sesion(usuario, contrasena)
         if user:
             print("Inicio de sesión exitoso.")

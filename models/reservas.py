@@ -14,7 +14,7 @@ class ReservasModelo:
     def __init__(self):
         self.db = DBConn()
 
-    def obtener_reservas(self, id_user):
+    def obtener_reservas(self):
         sql = """
         SELECT r.id, u.username, p.fecha_inicio, p.fecha_fin, r.fecha_reserva
         FROM Reservas r
@@ -22,6 +22,17 @@ class ReservasModelo:
         JOIN PaquetesTuristicos p ON r.paquete_id = p.id
         """
         return self.db.query(sql)
+
+    def obtener_reservas_por_usuario(self, usuario_id):
+        sql = """
+        SELECT r.id, u.username, p.fecha_inicio, p.fecha_fin, r.fecha_reserva, r.paquete_id
+        FROM Reservas r
+        JOIN Usuarios u ON r.usuario_id = u.id
+        JOIN PaquetesTuristicos p ON r.paquete_id = p.id
+        WHERE r.usuario_id = %s
+        """
+        resultado = self.db.query(sql, (usuario_id,))
+        return resultado
 
     def crear_reserva(self, usuario_id, paquete_id, fecha_reserva):
         try:

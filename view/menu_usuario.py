@@ -1,7 +1,8 @@
 from utilidades.utilidades import Utilidades
 import prettytable as pt
 from Controller.controlador import Controlador
-from Controller.controlador import ControladorPaqueteTuristico, ControladorReserva
+from Controller.controlador_paquete_turistico import ControladorPaqueteTuristico
+from Controller.controlador_reserva import ControladorReserva
 from models.usuario import UsuarioModelo
 from datetime import datetime
 import time
@@ -88,7 +89,6 @@ class MenuUsuario:
 
     def reservar_paquete_turistico(self):
         controlador_usuario = Controlador()
-        usuario_modelo = UsuarioModelo()
         usuario = controlador_usuario.obtener_usuario_por_id(self.usuario_id)
         if not usuario.get_hasDatosPersonales(): 
             print("Debe completar sus datos personales antes de realizar una reserva.")
@@ -111,7 +111,6 @@ class MenuUsuario:
                 print("Error al agregar los datos personales.")
                 Utilidades.pausar()
                 return
-
         controlador_paquete = ControladorPaqueteTuristico()
         controlador_reserva = ControladorReserva()
         paquetes = controlador_paquete.obtener_paquetes_turisticos()
@@ -121,17 +120,15 @@ class MenuUsuario:
             table.add_row([paquete['id'], paquete['fecha_inicio'], paquete['fecha_fin'], paquete['precio_total'], paquete['destinos']])
         print(table)
         id_paquete = input("Ingrese el ID del paquete a reservar: ")
-
         if not id_paquete.strip():  # Check for empty input
             print("No se ingresó ningún ID de paquete. Operación cancelada.")
             Utilidades.pausar()
             controlador_paquete.cerrar_conexion()
             controlador_reserva.cerrar_conexion()
             return
-
         # Check if the user has already reserved this package
         reservas = controlador_reserva.obtener_reservas_por_usuario(self.usuario_id)
-        if any(reserva[2] == int(id_paquete) for reserva in reservas):
+        if any(reserva['paquete_id'] == int(id_paquete) for reserva in reservas):
             print("Ya ha reservado este paquete anteriormente.")
             Utilidades.pausar()
             controlador_paquete.cerrar_conexion()
@@ -153,7 +150,7 @@ class MenuUsuario:
         table = pt.PrettyTable()
         table.field_names = ["ID Reserva", "Fecha Reserva", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos", "Actividades"]
         for reserva in reservas:
-            paquete_id = reserva['id']
+            paquete_id = reserva['paquete_id']
             controlador_paquete = ControladorPaqueteTuristico()
             paquete = controlador_paquete.obtener_paquete_turistico(paquete_id)
             destinos = controlador_paquete.obtener_destinos_de_paquete(paquete_id)
@@ -173,7 +170,7 @@ class MenuUsuario:
         table = pt.PrettyTable()
         table.field_names = ["ID Reserva", "Fecha Reserva", "Fecha Inicio", "Fecha Fin", "Precio Total", "Destinos", "Actividades"]
         for reserva in reservas:
-            paquete_id = reserva['id']
+            paquete_id = reserva['paquete_id']
             controlador_paquete = ControladorPaqueteTuristico()
             paquete = controlador_paquete.obtener_paquete_turistico(paquete_id)
             destinos = controlador_paquete.obtener_destinos_de_paquete(paquete_id)

@@ -1,6 +1,8 @@
 from utilidades.utilidades import Utilidades
 import prettytable as pt
-from Controller.controlador import ControladorDestino, ControladorPaqueteTuristico, ControladorAdmin
+from Controller.controlador_usuario import ControladorAdmin
+from Controller.controlador_destino import ControladorDestino
+from Controller.controlador_paquete_turistico import ControladorPaqueteTuristico
 from datetime import datetime
 import time
 
