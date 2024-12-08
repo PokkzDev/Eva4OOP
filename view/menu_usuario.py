@@ -53,7 +53,7 @@ class MenuUsuario:
         Utilidades.pausar()
         controlador_paquete.cerrar_conexion()
 
-    def buscar_paquetes_por_rango_fechas(self):  # Add this method
+    def buscar_paquetes_por_rango_fechas(self):  
         controlador_paquete = ControladorPaqueteTuristico()
         # Convertir las fechas del formato 'DD-MM-YYYY' a 'YYYY-MM-DD'
         while True:
