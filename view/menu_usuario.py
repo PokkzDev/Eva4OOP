@@ -163,7 +163,7 @@ class MenuUsuario:
 
 
 
-    def cancelar_reserva(self):  # Add this method
+    def cancelar_reserva(self):  
         controlador_reserva = ControladorReserva()
         reservas = controlador_reserva.obtener_reservas_por_usuario(self.usuario_id)    
         table = pt.PrettyTable()
