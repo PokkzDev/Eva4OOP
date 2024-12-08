@@ -4,7 +4,7 @@ from .db_conn import DBConn
 
 
 class Destino:
-    def __init__(self, id, nombre, descripcion, actividades=None, costo=None,):
+    def __init__(self, id, nombre, descripcion, actividades=None, costo=None):
         self.id = id
         self.nombre = nombre
         self.descripcion = descripcion
