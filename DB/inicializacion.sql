@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS Reservas (
 INSERT INTO Usuarios (username, password, hasDatosPersonales, rol) 
 VALUES ('admin', '$2b$10$XA7NAierT6j385TBJ.vOwulv6dU81fyB3/qwG6M1ys6aZ6iv/YwA.', FALSE, 'admin');
 
--- Insert mock data for Destinos
+-- Insertar mock data para Destinos
 INSERT INTO Destinos (nombre, descripciones, actividades, costo) VALUES
 ('Playa Paraíso', 'Hermosa playa con aguas cristalinas.', 'Nado, snorkel, relax', 1200.0),
 ('Montaña Mística', 'Montañas llenas de misterio y naturaleza.', 'Senderismo, escalada', 1500.0),
